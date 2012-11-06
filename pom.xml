@@ -1,0 +1,74 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>ca.hedlund</groupId>
+  <artifactId>jiss</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>jiss</name>
+  <description>Java interactive scripting shell.</description>
+  
+  <repositories>
+    <repository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>central</id>
+      <name>libs-release</name>
+      <url>http://phon.ling.mun.ca/artifactory/libs-release</url>
+    </repository>
+    <repository>
+      <snapshots />
+      <id>snapshots</id>
+      <name>libs-snapshot</name>
+      <url>http://phon.ling.mun.ca/artifactory/libs-snapshot</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>central</id>
+      <name>plugins-release</name>
+      <url>http://phon.ling.mun.ca/artifactory/plugins-release</url>
+    </pluginRepository>
+    <pluginRepository>
+      <snapshots />
+      <id>snapshots</id>
+      <name>plugins-snapshot</name>
+      <url>http://phon.ling.mun.ca/artifactory/plugins-snapshot</url>
+    </pluginRepository>
+  </pluginRepositories>
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <version>2.0.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.python</groupId>
+      <artifactId>jython</artifactId>
+      <version>2.5.3</version>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <plugins>
+      <!-- Setup target/source settings for Java compilation -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
