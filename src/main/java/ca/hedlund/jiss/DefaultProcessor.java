@@ -10,8 +10,9 @@ import javax.script.ScriptException;
 public class DefaultProcessor implements JissProcessor {
 
 	@Override
-	public void processCommand(JissModel jissModel, String cmd)
+	public Object processCommand(JissModel jissModel, String cmd)
 			throws JissError {
+		Object retVal = null;
 		final StringBuffer cmdBuffer = new StringBuffer(cmd);
 		
 		boolean keepProcessing = true;
@@ -22,13 +23,14 @@ public class DefaultProcessor implements JissProcessor {
 		if(keepProcessing) {
 			final ScriptEngine engine = jissModel.getScriptEngine();
 			try {
-				engine.eval(cmdBuffer.toString());
+				retVal = engine.eval(cmdBuffer.toString(), jissModel.getScriptContext());
 			} catch (ScriptException se) {
 				throw new JissError(se);
 			} catch (Exception e) {
 				throw new JissError(e);
 			}
 		}
+		return retVal;
 	}
 
 }

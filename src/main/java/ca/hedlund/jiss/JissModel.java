@@ -50,7 +50,7 @@ public class JissModel {
 	public JissModel(ClassLoader classLoader) {
 		// setup a default script engine
 		final ScriptEngineManager manager = new ScriptEngineManager(classLoader);
-		final ScriptEngine scriptEngine = manager.getEngineByExtension("groovy");
+		final ScriptEngine scriptEngine = manager.getEngineByExtension("js");
 		setScriptEngine(scriptEngine);
 		
 		setScriptContext(new JissContext());
