@@ -3,6 +3,9 @@ package ca.hedlund.jiss.preprocessor;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import ca.hedlund.jiss.JissModel;
 import ca.hedlund.jiss.JissPreprocessor;
 
@@ -18,7 +21,7 @@ public class InfoPreprocessor implements JissPreprocessor {
 	private final static String INFO_CMD = "jiss::info";
 	
 	@Override
-	public boolean preprocessCommand(JissModel jissModel, StringBuffer cmd) {
+	public boolean preprocessCommand(JissModel jissModel, String orig, StringBuffer cmd) {
 		final String c  = cmd.toString();
 		if(c.equals(INFO_CMD)) {
 			// clear string
@@ -35,7 +38,8 @@ public class InfoPreprocessor implements JissPreprocessor {
 			final String engineCmd = seFactory.getOutputStatement(
 					"Engine:" + seFactory.getEngineName() + " " + seFactory.getEngineVersion() + (incnl ? "\\n" : ""));
 			final String program = seFactory.getProgram(infoCmd, langCmd, engineCmd);
-			cmd.append(program);
+			cmd.append(
+					StringEscapeUtils.unescapeJava(program)) ;
 		}
 		// we want the scripting engine to handle the replaced command
 		return false;

@@ -9,6 +9,8 @@ public class JissContext extends SimpleScriptContext {
 	 */
 	public JissContext() {
 		super();
+		
+		super.getBindings(ENGINE_SCOPE).put("context", this);
 	}
 	
 }

@@ -13,6 +13,7 @@ public interface JissPreprocessor {
 	 * pre-processor.
 	 * 
 	 * @param jissModel
+	 * @param orig the original command
 	 * @param cmd the command as a mutable string
 	 *  buffer.
 	 * 
@@ -21,6 +22,6 @@ public interface JissPreprocessor {
 	 *  requried (i.e., the command should not be sent to the 
 	 *  script engine.)
 	 */
-	public boolean preprocessCommand(JissModel jissModel, StringBuffer cmd);
+	public boolean preprocessCommand(JissModel jissModel, String orig, StringBuffer cmd);
 
 }

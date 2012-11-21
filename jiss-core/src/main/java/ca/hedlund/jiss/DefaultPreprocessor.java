@@ -10,7 +10,7 @@ import java.util.ServiceLoader;
 public class DefaultPreprocessor implements JissPreprocessor {
 
 	@Override
-	public boolean preprocessCommand(JissModel jissModel, StringBuffer cmd) {
+	public boolean preprocessCommand(JissModel jissModel, String orig, StringBuffer cmd) {
 		final ClassLoader cl = jissModel.getClass().getClassLoader();
 		final ServiceLoader<JissPreprocessor> loader =
 				ServiceLoader.load(JissPreprocessor.class, cl);
@@ -19,8 +19,7 @@ public class DefaultPreprocessor implements JissPreprocessor {
 		final Iterator<JissPreprocessor> itr = loader.iterator();
 		while(itr.hasNext()) {
 			final JissPreprocessor preprocessor = itr.next();
-			processed |= preprocessor.preprocessCommand(jissModel, cmd);
-			if(processed) break;
+			processed |= preprocessor.preprocessCommand(jissModel, orig, cmd);
 		}
 		
 		return processed;

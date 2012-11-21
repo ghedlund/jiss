@@ -17,7 +17,7 @@ public class DefaultProcessor implements JissProcessor {
 		
 		boolean keepProcessing = true;
 		for(JissPreprocessor preprocessor:jissModel.getPreprocessors()) {
-			keepProcessing &= !preprocessor.preprocessCommand(jissModel, cmdBuffer);
+			keepProcessing &= !preprocessor.preprocessCommand(jissModel, cmd, cmdBuffer);
 		}
 		
 		if(keepProcessing) {

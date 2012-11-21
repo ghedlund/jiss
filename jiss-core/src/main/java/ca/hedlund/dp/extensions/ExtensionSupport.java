@@ -1,4 +1,4 @@
-package ca.phon.extensions;
+package ca.hedlund.dp.extensions;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -107,8 +107,8 @@ public final class ExtensionSupport implements IExtendable {
 			if(extensionClass != null && extensionClass.value().isAssignableFrom(declaredType)) {
 				provider.installExtension(parent.get());
 			} else {
-				LOGGER.warning(providerClass.getName() + 
-						" missing @Extension annotation.  Not loaded into object " + toString());
+				LOGGER.fine(providerClass.getName() + 
+						" missing @Extension annotation.  Not loaded into object " + parent.get().toString());
 			}
 		}
 	}

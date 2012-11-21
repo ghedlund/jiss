@@ -75,6 +75,15 @@ public class JissConsoleDocument extends DefaultStyledDocument {
 		}
 	}
 	
-	
+	/**
+	 * Insert a soft return into the console
+	 */
+	public void insertSoftReturn(int pos) {
+		try {
+			super.insertString(pos, System.getProperty("line.separator"), null);
+		} catch (BadLocationException be) {
+			be.printStackTrace();
+		}
+	}
 	
 }

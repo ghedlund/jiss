@@ -58,5 +58,6 @@
   <modules>
   	<module>jiss-core</module>
   	<module>jiss-history</module>
+  	<module>jiss-app</module>
   </modules>
 </project>

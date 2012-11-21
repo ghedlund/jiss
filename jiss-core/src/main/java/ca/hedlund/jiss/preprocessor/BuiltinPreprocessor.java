@@ -7,6 +7,8 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import ca.hedlund.jiss.JissContext;
 import ca.hedlund.jiss.JissModel;
 import ca.hedlund.jiss.JissPreprocessor;
@@ -18,7 +20,7 @@ import ca.hedlund.jiss.JissPreprocessor;
 public class BuiltinPreprocessor implements JissPreprocessor {
 
 	@Override
-	public boolean preprocessCommand(JissModel jissModel, StringBuffer cmd) {
+	public boolean preprocessCommand(JissModel jissModel, String orig, StringBuffer cmd) {
 		final String c = cmd.toString();
 		if(c.equals("jiss::langs")) {
 			cmd.setLength(0);
@@ -64,7 +66,7 @@ public class BuiltinPreprocessor implements JissPreprocessor {
 				factory.getLanguageName() + " " + factory.getLanguageVersion() + ":" + factory.getEngineName() + " " + factory.getEngineVersion();
 		cmds.add(createPrintCmd(model, engineInfo));
 		
-		final String prog = factory.getProgram(cmds.toArray(new String[0]));
+		final String prog = StringEscapeUtils.unescapeJava(	factory.getProgram(cmds.toArray(new String[0])) );
 		cmd.append(prog);
 	}
 	
@@ -78,7 +80,7 @@ public class BuiltinPreprocessor implements JissPreprocessor {
 			cmds.add(createPrintCmd(model, engineInfo));
 		}
 		final ScriptEngineFactory factory = model.getScriptEngine().getFactory();
-		final String prog = factory.getProgram(cmds.toArray(new String[0]));
+		final String prog = StringEscapeUtils.unescapeJava( factory.getProgram(cmds.toArray(new String[0])) );
 		cmd.append(prog);
 	}
 	

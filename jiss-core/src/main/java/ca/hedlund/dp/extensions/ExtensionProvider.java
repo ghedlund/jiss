@@ -1,4 +1,4 @@
-package ca.phon.extensions;
+package ca.hedlund.dp.extensions;
 
 /**
  * Handles installation of extensions on {@link IExtendable}

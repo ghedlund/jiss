@@ -5,16 +5,20 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
+import ca.hedlund.dp.extensions.ExtensionSupport;
+import ca.hedlund.dp.extensions.IExtendable;
+
 /**
  * Model for a jiss console.
  *
  */
-public class JissModel {
+public class JissModel implements IExtendable {
 	
 	/**
 	 * Current script engine
@@ -41,6 +45,28 @@ public class JissModel {
 	public static final String PREPROCESSOR_PROP = JissModel.class.getName() + ".preProcessors";
 	
 	/**
+	 * Extension support
+	 * 
+	 */
+	private final ExtensionSupport extensionSupport = new ExtensionSupport(JissModel.class, this);
+	
+	public Set<Class<?>> getExtensions() {
+		return extensionSupport.getExtensions();
+	}
+
+	public <T> T getExtension(Class<T> cap) {
+		return extensionSupport.getExtension(cap);
+	}
+
+	public <T> T putExtension(Class<T> cap, T impl) {
+		return extensionSupport.putExtension(cap, impl);
+	}
+
+	public <T> T removeExtension(Class<T> cap) {
+		return extensionSupport.removeExtension(cap);
+	}
+
+	/**
 	 * Constructor
 	 */
 	public JissModel() {
@@ -48,6 +74,9 @@ public class JissModel {
 	}
 	
 	public JissModel(ClassLoader classLoader) {
+		super();
+		extensionSupport.initExtensions();
+		
 		// setup a default script engine
 		final ScriptEngineManager manager = new ScriptEngineManager(classLoader);
 		final ScriptEngine scriptEngine = manager.getEngineByExtension("js");

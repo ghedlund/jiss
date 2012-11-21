@@ -5,10 +5,14 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.Writer;
+import java.util.Set;
 
 import javax.lang.model.type.PrimitiveType;
 import javax.script.ScriptEngine;
@@ -25,6 +29,8 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.NavigationFilter;
@@ -34,6 +40,8 @@ import javax.swing.text.Position.Bias;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import ca.hedlund.dp.extensions.ExtensionSupport;
+import ca.hedlund.dp.extensions.IExtendable;
 import ca.hedlund.jiss.JissContext;
 import ca.hedlund.jiss.JissError;
 import ca.hedlund.jiss.JissModel;
@@ -46,7 +54,7 @@ import ca.hedlund.jiss.JissProcessor;
  * an input prompt.
  * 
  */
-public class JissConsole extends JTextPane {
+public class JissConsole extends JTextPane implements IExtendable {
 	
 	/**
 	 * Document
@@ -54,8 +62,10 @@ public class JissConsole extends JTextPane {
 	public JissConsoleDocument doc;
 	
 	/**
-	 * Document styles
+	 * Extension support
 	 */
+	private final ExtensionSupport extensionSupport = 
+			new ExtensionSupport(JissConsole.class, this);
 	
 	/**
 	 * Jiss model
@@ -72,8 +82,10 @@ public class JissConsole extends JTextPane {
 		this.jissModel.addPreprocessor(clearPreprocessor);
 		this.doc = new JissConsoleDocument();
 		setDocument(doc);
+		setCaret(new JissConsoleCaret());
 		
 		init();
+		extensionSupport.initExtensions();
 	}
 	
 	private void init() {
@@ -137,13 +149,8 @@ public class JissConsole extends JTextPane {
 		public void actionPerformed(ActionEvent arg0) {
 			try {
 				final String cmd = doc.getPrompt();
-				
-				if(!cmd.endsWith("\\")) { 
-					// escaped string, continue with input
-					execute(cmd.replaceAll("\\\\", ""));
-				} else {
-					doc.insertString(doc.getLength(), "\n", null);
-				}
+				doc.insertString(doc.getLength(), "\n", null);
+				execute(cmd);
 			} catch (BadLocationException be) {
 				be.printStackTrace();
 			}
@@ -165,22 +172,24 @@ public class JissConsole extends JTextPane {
 				final JissProcessor processor = jissModel.getProcessor();
 				
 				// setup output streams
-				final StringWriter stdoutSw = new StringWriter();
-				final PrintWriter stdoutPw = new PrintWriter(stdoutSw);
+				final Writer stdoutSw = new JissConsoleWriter(getDocument());
+				final Writer stdoutEw = new JissConsoleWriter(getDocument());
 				
-				jissModel.getScriptContext().setWriter(stdoutPw);
+				jissModel.getScriptContext().setWriter(new PrintWriter(stdoutSw));
+				jissModel.getScriptContext().setErrorWriter(new PrintWriter(stdoutEw));
 				
+				getDocument().addDocumentListener(caretMover);
 				final Object val = processor.processCommand(jissModel, cmd);
-				
-				final String output = 
-						StringEscapeUtils.unescapeJava( stdoutSw.getBuffer().toString() );
-				
-				SwingUtilities.invokeLater(new PrintOutputTask("\n"));
-				if(output.length() > 0) {
-					boolean addnl = !output.endsWith("\n");
-					SwingUtilities.invokeLater(new PrintOutputTask(output 
-							+ (addnl ? "" : "\n")) );
-				}
+				getDocument().removeDocumentListener(caretMover);
+//				final String output = 
+//						StringEscapeUtils.unescapeJava( stdoutSw.getBuffer().toString() );
+//				
+//				SwingUtilities.invokeLater(new PrintOutputTask("\n"));
+//				if(output.length() > 0) {
+//					boolean addnl = !output.endsWith("\n");
+//					SwingUtilities.invokeLater(new PrintOutputTask(output 
+//							+ (addnl ? "" : "\n")) );
+//				}
 				
 				if(val != null)
 					SwingUtilities.invokeLater(new PrintOutputTask(val.toString() + "\n"));
@@ -236,7 +245,7 @@ public class JissConsole extends JTextPane {
 	 */
 	private JissPreprocessor clearPreprocessor = new JissPreprocessor() {
 		@Override
-		public boolean preprocessCommand(JissModel jissModel, StringBuffer cmd) {
+		public boolean preprocessCommand(JissModel jissModel, String orig, StringBuffer cmd) {
 			if(cmd.toString().equals("clear")) {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
@@ -279,23 +288,40 @@ public class JissConsole extends JTextPane {
 		}
 		
 	};
-
-	public static void main(String[] args) {
-		final Font fixedWidth = new Font("Menlo", Font.PLAIN, 13);
+	
+	private DocumentListener caretMover = new DocumentListener() {
 		
-		final JissConsole console = new JissConsole();
-		console.setForeground(Color.white);
-		console.setBackground(Color.black);
-		console.setCaretColor(Color.white);
+		@Override
+		public void removeUpdate(DocumentEvent e) {
+			
+		}
 		
-		console.setFont(fixedWidth);
+		@Override
+		public void insertUpdate(DocumentEvent e) {
+			setCaretPosition(getDocument().getLength());
+		}
 		
-		final JScrollPane sp = new JScrollPane(console);
-		final JFrame f = new JFrame("JissConsole");
-		f.add(sp);
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.pack();
-		f.setLocationByPlatform(true);
-		f.setVisible(true);
+		@Override
+		public void changedUpdate(DocumentEvent e) {
+			
+		}
+	};
+	
+	public Set<Class<?>> getExtensions() {
+		return extensionSupport.getExtensions();
 	}
+
+	public <T> T getExtension(Class<T> cap) {
+		return extensionSupport.getExtension(cap);
+	}
+
+	public <T> T putExtension(Class<T> cap, T impl) {
+		return extensionSupport.putExtension(cap, impl);
+	}
+
+	public <T> T removeExtension(Class<T> cap) {
+		return extensionSupport.removeExtension(cap);
+	}
+	
+	
 }
