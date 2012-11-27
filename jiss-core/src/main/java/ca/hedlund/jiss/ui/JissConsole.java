@@ -59,7 +59,7 @@ public class JissConsole extends JTextPane implements IExtendable {
 	/**
 	 * Document
 	 */
-	public JissConsoleDocument doc;
+	public JissDocument doc;
 	
 	/**
 	 * Extension support
@@ -80,9 +80,9 @@ public class JissConsole extends JTextPane implements IExtendable {
 		super();
 		this.jissModel = model;
 		this.jissModel.addPreprocessor(clearPreprocessor);
-		this.doc = new JissConsoleDocument();
+		this.doc = new JissDocument();
 		setDocument(doc);
-		setCaret(new JissConsoleCaret());
+		setCaret(new JissCaret());
 		
 		init();
 		extensionSupport.initExtensions();
@@ -91,41 +91,25 @@ public class JissConsole extends JTextPane implements IExtendable {
 	private void init() {
 		prompt();
 		
-		final ActionMap am = super.getActionMap();
-		final InputMap im = super.getInputMap(WHEN_FOCUSED);
-		
-		final Action exeAct = new ExecuteAction();
-		final KeyStroke ks = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
-		final String exeId = "_execute_";
-		im.put(ks, exeId);
-		am.put(exeId, exeAct);
-		
-		
-		
 		super.setNavigationFilter(navFilter);
-		
-		super.setActionMap(am);
-		super.setInputMap(WHEN_FOCUSED, im);
 	}
 	
-	public void execute(String cmd) {
-		final ExecuteTask act = new ExecuteTask(cmd);
-		final Thread th = new Thread(act);
-		th.start();
+	public JissModel getModel() {
+		return this.jissModel;
 	}
 	
 	public String getPromptString() {
 		final ScriptEngine engine = jissModel.getScriptEngine();
 		final String promptTxt = engine.getFactory().getExtensions().get(0);
 		
-		return "-(" + promptTxt + ")-" + "$ ";
+		return promptTxt + " " + "$ ";
 	}
 	
 	/**
 	 * Method to print a new prompt to the end of the
 	 * console and setup prompt location for input.
 	 */
-	private void prompt() {
+	public void prompt() {
 		final Runnable onEDT = new Runnable() {
 			@Override
 			public void run() {
@@ -141,103 +125,6 @@ public class JissConsole extends JTextPane implements IExtendable {
 			}
 		};
 		SwingUtilities.invokeLater(onEDT);
-	}
-	
-	private final class ExecuteAction extends AbstractAction {
-
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			try {
-				final String cmd = doc.getPrompt();
-				doc.insertString(doc.getLength(), "\n", null);
-				execute(cmd);
-			} catch (BadLocationException be) {
-				be.printStackTrace();
-			}
-		}
-		
-	}
-	
-	private final class ExecuteTask implements Runnable {
-		
-		private String cmd;
-		
-		public ExecuteTask(String cmd) {
-			this.cmd = cmd;
-		}
-		
-		@Override
-		public void run() {
-			try {
-				final JissProcessor processor = jissModel.getProcessor();
-				
-				// setup output streams
-				final Writer stdoutSw = new JissConsoleWriter(getDocument());
-				final Writer stdoutEw = new JissConsoleWriter(getDocument());
-				
-				jissModel.getScriptContext().setWriter(new PrintWriter(stdoutSw));
-				jissModel.getScriptContext().setErrorWriter(new PrintWriter(stdoutEw));
-				
-				getDocument().addDocumentListener(caretMover);
-				final Object val = processor.processCommand(jissModel, cmd);
-				getDocument().removeDocumentListener(caretMover);
-//				final String output = 
-//						StringEscapeUtils.unescapeJava( stdoutSw.getBuffer().toString() );
-//				
-//				SwingUtilities.invokeLater(new PrintOutputTask("\n"));
-//				if(output.length() > 0) {
-//					boolean addnl = !output.endsWith("\n");
-//					SwingUtilities.invokeLater(new PrintOutputTask(output 
-//							+ (addnl ? "" : "\n")) );
-//				}
-				
-				if(val != null)
-					SwingUtilities.invokeLater(new PrintOutputTask(val.toString() + "\n"));
-				
-				prompt();
-			} catch (JissError err) {
-				handleError(err);
-				err.printStackTrace();
-			}
-		}
-		
-	}
-	
-	private void handleError(JissError err) {
-		final Throwable cause = err.getCause();
-		if(cause instanceof ScriptException) {
-			final ScriptException se = ScriptException.class.cast(cause);
-			SwingUtilities.invokeLater(new PrintOutputTask("\n" + se.getLocalizedMessage() + "\n"));
-			prompt();
-		}
-	}
-	
-	/**
-	 * 
-	 */
-	private class PrintOutputTask implements Runnable {
-		
-		private String toPrint;
-		
-		private boolean escape = true;
-		
-		public PrintOutputTask(String toPrint) {
-			this.toPrint = toPrint;
-			this.escape = escape;
-		}
-
-		@Override
-		public void run() {
-			final String txt = (escape ? StringEscapeUtils.unescapeJava(toPrint) : toPrint);
-			
-			final Document doc = getDocument();
-			try {
-				doc.insertString(doc.getLength(), txt, null);
-			} catch (BadLocationException be) {
-				be.printStackTrace();
-			}
-		}
-		
 	}
 	
 	/**
@@ -287,24 +174,6 @@ public class JissConsole extends JTextPane implements IExtendable {
 			super.moveDot(fb, dot, bias);
 		}
 		
-	};
-	
-	private DocumentListener caretMover = new DocumentListener() {
-		
-		@Override
-		public void removeUpdate(DocumentEvent e) {
-			
-		}
-		
-		@Override
-		public void insertUpdate(DocumentEvent e) {
-			setCaretPosition(getDocument().getLength());
-		}
-		
-		@Override
-		public void changedUpdate(DocumentEvent e) {
-			
-		}
 	};
 	
 	public Set<Class<?>> getExtensions() {

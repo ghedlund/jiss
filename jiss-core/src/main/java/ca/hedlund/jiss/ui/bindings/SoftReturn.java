@@ -2,6 +2,7 @@ package ca.hedlund.jiss.ui.bindings;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.lang.ref.WeakReference;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -12,7 +13,7 @@ import ca.hedlund.dp.extensions.Extension;
 import ca.hedlund.dp.extensions.ExtensionProvider;
 import ca.hedlund.dp.extensions.IExtendable;
 import ca.hedlund.jiss.ui.JissConsole;
-import ca.hedlund.jiss.ui.JissConsoleDocument;
+import ca.hedlund.jiss.ui.JissDocument;
 
 /**
  * Insert a soft-return into the console
@@ -32,7 +33,7 @@ public class SoftReturn extends AbstractAction implements ExtensionProvider {
 	/**
 	 * console
 	 */
-	private JissConsole console;
+	private WeakReference<JissConsole> consoleRef;
 	
 	public KeyStroke getKeystroke() {
 		return KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, KeyEvent.SHIFT_MASK);
@@ -40,15 +41,15 @@ public class SoftReturn extends AbstractAction implements ExtensionProvider {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		final JissConsoleDocument consoleDoc = 
-				JissConsoleDocument.class.cast(console.getDocument());
-		consoleDoc.insertSoftReturn(console.getCaretPosition());
+		final JissDocument consoleDoc = 
+				JissDocument.class.cast(consoleRef.get().getDocument());
+		consoleDoc.insertSoftReturn(consoleRef.get().getCaretPosition());
 	}
 
 	@Override
 	public void installExtension(IExtendable obj) {
 		final JissConsole console = JissConsole.class.cast(obj);
-		this.console = console;
+		this.consoleRef = new WeakReference<JissConsole>(console);
 		
 		final ActionMap actionMap = console.getActionMap();
 		final InputMap inputMap = console.getInputMap(JissConsole.WHEN_FOCUSED);

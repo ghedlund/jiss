@@ -4,7 +4,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Logger;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import ca.hedlund.dp.extensions.Extension;
 import ca.hedlund.dp.extensions.ExtensionProvider;
@@ -20,84 +27,107 @@ import ca.hedlund.jiss.JissModel;
  * entries to the same history file.
  *
  */
+@XmlRootElement
 @Extension(JissModel.class)
-public class JissHistory implements ExtensionProvider {
-	
-	private final static Logger LOGGER =
-			Logger.getLogger(JissHistory.class.getName());
+public class JissHistory {
 	
 	/**
-	 * History file location property
+	 * Keep a max of 100 entries in the history
+	 * 
+	 * TODO read this value from a property
 	 */
-	public final static String HISTORY_PATH_PROP = JissHistory.class.getName() + ".jiss_history";
+	private final static int HISTORY_MAX_SIZE = 100;
+	
+	private List<JissHistoryEntry> entries;
 	
 	/**
-	 * Default history file path
+	 * Current index of rev-iteration through the history.
+	 * This is a zero-based index from the end of this list,
+	 * meaning that 0 is actually the value of getSize()-1.
+	 * If iteration has not been started, this value should be
+	 * less than zero.
 	 */
-	public final static String DEFAULT_HISTORY_PATH = System.getProperty("user.home") + File.separator + ".jiss_history";
-	
-	private static final String HISTORY_LINE_FORMAT = ": %d:%s";
-	
-	/**
-	 * History file
-	 */
-	private File historyFile;
+	private int itrIdx = -1;
 	
 	/**
 	 * Constructor
 	 */
 	public JissHistory() {
 		super();
+		this.entries = new ArrayList<JissHistoryEntry>();
 	}
 	
-	/**
-	 * Return the history file.
-	 * @return the history file
-	 */
-	public File getHistoryFile() {
-		if(historyFile == null) {
-			// TODO allow setting this variable using a pref/setting
-			final String historyFilePath = DEFAULT_HISTORY_PATH;
-			historyFile = new File(historyFilePath);
-			
-			if(!historyFile.exists()) {
-				try {
-					historyFile.createNewFile();
-				} catch (IOException e) {
-					e.printStackTrace();
-					LOGGER.severe(e.getMessage());
-				}
-			}
-		}
-		return historyFile;
+	@XmlElement(name="entry")
+	public List<JissHistoryEntry> getEntries() {
+		return entries;
 	}
-	
+
+	public void setEntries(List<JissHistoryEntry> entries) {
+		this.entries = entries;
+	}
+
 	/**
 	 * Add a new entry to the history file.
 	 * 
 	 * @param cmd
 	 */
 	public void addToHistory(String cmd) {
-		try {
-			final FileWriter historyAppender = new FileWriter(getHistoryFile(), true);
-			final PrintWriter out = new PrintWriter(historyAppender);
-			
-			final long timestamp = System.currentTimeMillis();
-			final String output = String.format(HISTORY_LINE_FORMAT, timestamp, cmd);
-			
-			out.println(output);
-			out.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			LOGGER.severe(e.getMessage());
+		// add a new JissHistoryEntry to the list of entries
+		// remove entries from beginning of list to ensure max size is maintained
+		final JissHistoryEntry entry = new JissHistoryEntry();
+		entry.setSource(cmd);
+		entry.setTimestamp(System.currentTimeMillis());
+		
+		getEntries().add(entry);
+		
+		while(getEntries().size() > HISTORY_MAX_SIZE) {
+			getEntries().remove(0);
 		}
+	}
+
+	/**
+	 * Returns the next value in the reverse iteration of the
+	 * history.  Will begin iteration if it has not started.
+	 * 
+	 * @return the value of the next history entry, <code>null</code> if
+	 *  the end of the iteration has been reached
+	 */
+	public String getNextHistoryEntry() {
+		itrIdx++;
+		final int realIdx = entries.size() - itrIdx - 1;
+		String retVal = null;
+		
+		if(realIdx >= 0 && realIdx < entries.size()) {
+			final JissHistoryEntry entry = entries.get(realIdx);
+			retVal = entry.getSource();
+		}
+		return retVal;
 	}
 	
-	@Override
-	public void installExtension(IExtendable obj) {
-		if(obj instanceof JissModel) {
-			final JissModel model = JissModel.class.cast(obj);
-			model.putExtension(JissHistory.class, this);
+	/**
+	 * Returns the previous value in the reverse iteration of the
+	 * history.
+	 * 
+	 * @return the value of the prev history entry, <code>null</code> if
+	 *  the end of the iteration has been reached
+	 */
+	public String getPrevHistoryEntry() {
+		itrIdx--;
+		final int realIdx = entries.size() - itrIdx - 1;
+		String retVal = null;
+		
+		if(realIdx >= 0 && realIdx < entries.size()) {
+			final JissHistoryEntry entry = entries.get(realIdx);
+			retVal = entry.getSource();
 		}
+		return retVal;
 	}
+	
+	/**
+	 * Reset history iteration.
+	 */
+	public void resetIterator() {
+		this.itrIdx = -1;
+	}
+	
 }

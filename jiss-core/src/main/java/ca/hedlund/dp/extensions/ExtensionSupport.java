@@ -119,14 +119,14 @@ public final class ExtensionSupport implements IExtendable {
 	}
 
 	@Override
-	public <T> T getExtension(Class<T> cap) {
+	public synchronized <T> T getExtension(Class<T> cap) {
 		final Object inst = extensions.get(cap);
 		final T retVal = cap.cast(inst);
 		return retVal;
 	}
 
 	@Override
-	public <T> T putExtension(Class<T> cap, T impl) {
+	public synchronized <T> T putExtension(Class<T> cap, T impl) {
 		final Extension capAnnotation = 
 				cap.getAnnotation(Extension.class);
 		if(capAnnotation == null || !capAnnotation.value().isAssignableFrom(declaredType)) {
@@ -140,7 +140,7 @@ public final class ExtensionSupport implements IExtendable {
 	}
 
 	@Override
-	public <T> T removeExtension(Class<T> cap) {
+	public synchronized <T> T removeExtension(Class<T> cap) {
 		final Object removed = extensions.remove(cap);
 		T retVal = null;
 		if(removed != null) {

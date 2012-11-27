@@ -59,5 +59,7 @@
   	<module>jiss-core</module>
   	<module>jiss-history</module>
   	<module>jiss-app</module>
+  	<module>jiss-rsyntaxarea-input</module>
+  	<module>jiss-blocks</module>
   </modules>
 </project>

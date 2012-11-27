@@ -4,6 +4,9 @@ import javax.script.SimpleScriptContext;
 
 public class JissContext extends SimpleScriptContext {
 	
+	public final static String LAST_VALUE = 
+			"__last";
+	
 	/**
 	 * Constructor
 	 */
