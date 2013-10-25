@@ -23,6 +23,10 @@ public class BlockPath {
 		parts = new ArrayList<String>();
 	}
 	
+	public BlockPath(String path) {
+		this(path.split("/"));
+	}
+	
 	public BlockPath(String... part) {
 		parts = Arrays.asList(part);
 	}
