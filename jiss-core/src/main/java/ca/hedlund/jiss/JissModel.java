@@ -44,6 +44,8 @@ public class JissModel implements IExtendable {
 	private final List<JissPreprocessor> preProcessors = new ArrayList<JissPreprocessor>();
 	public static final String PREPROCESSOR_PROP = JissModel.class.getName() + ".preProcessors";
 	
+	private final ClassLoader classLoader;
+	
 	/**
 	 * Extension support
 	 * 
@@ -76,6 +78,8 @@ public class JissModel implements IExtendable {
 	public JissModel(ClassLoader classLoader) {
 		super();
 		extensionSupport.initExtensions();
+		
+		this.classLoader = classLoader;
 		
 		// setup a default script engine
 		final ScriptEngineManager manager = new ScriptEngineManager(classLoader);

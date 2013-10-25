@@ -2,7 +2,11 @@ package ca.hedlund.jiss.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
@@ -61,6 +65,9 @@ public class JissConsole extends JTextPane implements IExtendable {
 	 */
 	public JissDocument doc;
 	
+	private final int DEFAULT_COLS = 100;
+	private final int DEFAULT_ROWS = 25;
+	
 	/**
 	 * Extension support
 	 */
@@ -89,6 +96,9 @@ public class JissConsole extends JTextPane implements IExtendable {
 	}
 	
 	private void init() {
+		// setup a default monospaced font
+		final Font monospaced = new Font("Monospaced", Font.PLAIN, 12);
+		setFont(monospaced);
 		prompt();
 		
 		super.setNavigationFilter(navFilter);
@@ -105,11 +115,39 @@ public class JissConsole extends JTextPane implements IExtendable {
 		return promptTxt + " " + "$ ";
 	}
 	
+	public void prompt() {
+		prompt("");
+	}
+	
+	private boolean isInitialSizing = true;
+	@Override
+	public Dimension getPreferredSize() {
+		final Dimension retVal = super.getPreferredSize();
+		
+		if(isInitialSizing) {
+			final Font f = getFont();
+			final Graphics2D g2d = Graphics2D.class.cast(getGraphics());
+			final FontMetrics fm = g2d.getFontMetrics(f);
+			
+			final int fontHeight = fm.getHeight();
+			final int prefHeight = fontHeight * DEFAULT_ROWS;
+			final int charWidth = fm.getWidths()['w'];
+			final int prefWidth = charWidth * DEFAULT_COLS;
+			
+			retVal.height = prefHeight;
+			retVal.width = prefWidth;
+			
+			isInitialSizing = false;
+		}
+		
+		return retVal;
+	}
+	
 	/**
 	 * Method to print a new prompt to the end of the
 	 * console and setup prompt location for input.
 	 */
-	public void prompt() {
+	public void prompt(final String txt) {
 		final Runnable onEDT = new Runnable() {
 			@Override
 			public void run() {
@@ -119,6 +157,7 @@ public class JissConsole extends JTextPane implements IExtendable {
 					doc.markPromptLocation();
 					int promptLocation = doc.getLength();
 					setCaretPosition(promptLocation);
+					doc.insertString(promptLocation, txt, null);
 				} catch (BadLocationException be) {
 					be.printStackTrace();
 				}

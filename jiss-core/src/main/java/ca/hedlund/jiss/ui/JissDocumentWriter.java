@@ -1,9 +1,11 @@
 package ca.hedlund.jiss.ui;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.ref.WeakReference;
 
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
@@ -12,7 +14,7 @@ import javax.swing.text.Document;
 /**
  * 
  */
-public class JissDocumentWriter extends Writer {
+public class JissDocumentWriter extends Writer implements Runnable {
 	
 	/**
 	 * Weak reference to text document
@@ -20,6 +22,8 @@ public class JissDocumentWriter extends Writer {
 	private WeakReference<Document> docRef;
 	
 	private final StringBuffer buffer = new StringBuffer();
+	
+	private volatile boolean alreadyWaiting = false;
 	
 	/**
 	 * Constructor
@@ -44,9 +48,21 @@ public class JissDocumentWriter extends Writer {
 
 	@Override
 	public void flush() throws IOException {
-		final String txt = buffer.toString();
-		buffer.setLength(0);
-		if(txt.length() > 0) {
+//		synchronized (buffer) {
+			if(!alreadyWaiting) {
+				alreadyWaiting = true;
+				SwingUtilities.invokeLater(this);
+			}
+//		}
+	}
+	
+	@Override
+	public void run() {
+		synchronized(buffer) {
+			final String txt = buffer.toString();
+			buffer.setLength(0);
+			alreadyWaiting = false;
+			
 			try {
 				final Document doc = getDocument();
 				doc.insertString(doc.getLength(), txt, null);
@@ -58,11 +74,13 @@ public class JissDocumentWriter extends Writer {
 
 	@Override
 	public void write(char[] cbuf, int off, int len) throws IOException {
-		for(int i = off; i < off+len; i++) {
-			char c = cbuf[i];
-			buffer.append(c);
-			if(c == '\n') {
-				flush();
+		synchronized(buffer) {
+			for(int i = off; i < off+len; i++) {
+				char c = cbuf[i];
+				buffer.append(c);
+				if(c == '\n') {
+					flush();
+				}
 			}
 		}
 	}

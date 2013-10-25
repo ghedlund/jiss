@@ -98,7 +98,7 @@ public final class ExtensionSupport implements IExtendable {
 	 */
 	public void initExtensions() {
 		final ServiceLoader<ExtensionProvider> services =
-				ServiceLoader.load(ExtensionProvider.class);
+				ServiceLoader.load(ExtensionProvider.class, ExtensionSupport.class.getClassLoader());
 		for(ExtensionProvider provider:services) {
 			final Class<?> providerClass = provider.getClass();
 			
