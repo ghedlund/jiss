@@ -51,7 +51,6 @@ public class RunCommand extends AbstractAction implements ExtensionProvider {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		System.out.println("I'm here");
 		final JissConsole console = consoleRef.get();
 		final JissModel model = console.getModel();
 		final JissThread currentThread = model.getExtension(JissThread.class);
