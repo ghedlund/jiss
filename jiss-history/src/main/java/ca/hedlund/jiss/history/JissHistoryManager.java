@@ -58,6 +58,11 @@ public class JissHistoryManager implements ExtensionProvider {
 		final String historyFilePath = DEFAULT_HISTORY_PATH;
 		historyFile = new File(historyFilePath);
 		
+		final File historyParent = historyFile.getParentFile();
+		if(!historyParent.exists()) {
+			historyParent.mkdirs();
+		}
+		
 		if(!historyFile.exists()) {
 			try {
 				historyFile.createNewFile();
