@@ -1,2 +1,3 @@
 ca.hedlund.jiss.blocks.preprocessor.SaveBlockPreprocessor
 ca.hedlund.jiss.blocks.preprocessor.LoadBlockPreprocessor
+ca.hedlund.jiss.blocks.preprocessor.ListBlocksPreprocessor

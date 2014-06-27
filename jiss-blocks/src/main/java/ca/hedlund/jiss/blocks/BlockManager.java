@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -13,6 +17,8 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
+
+import ca.hedlund.jiss.blocks.preprocessor.ListBlocksPreprocessor;
 
 /**
  * Helps save/load blocks from disk.
@@ -92,6 +98,20 @@ public class BlockManager {
 		} else {
 			throw new FileNotFoundException(relPath);
 		}
+	}
+	
+	/**
+	 * List blocks in the given path
+	 * 
+	 * @return list of block names
+	 * @throws IOException
+	 */
+	public List<String> getBlocks()  {
+		final File rootFolder = new File(ROOT_FOLDER);
+		if(rootFolder.exists()) {
+			return Arrays.asList(rootFolder.list());
+		}
+		return new ArrayList<String>();
 	}
 	
 }
