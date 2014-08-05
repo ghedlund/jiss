@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 
 import ca.hedlund.dp.extensions.ExtensionSupport;
@@ -102,6 +103,26 @@ public class JissModel implements IExtendable {
 	
 	public ScriptEngine getScriptEngine() {
 		return this.scriptEngine;
+	}
+	
+	/**
+	 * Determine the engine type (if any) that can execute a script file with
+	 * the given extension.
+	 * 
+	 * @param ext
+	 * 
+	 * @return script engine
+	 */
+	public ScriptEngine engineForExtension(String ext) {
+		final ScriptEngineManager manager = new ScriptEngineManager(
+				JissModel.class.getClassLoader());
+		ScriptEngine retVal = null;
+		for (ScriptEngineFactory factory : manager.getEngineFactories()) {
+			if (factory.getExtensions().contains(ext)) {
+				retVal = factory.getScriptEngine();
+			}
+		}
+		return retVal;
 	}
 	
 	public void setScriptContext(ScriptContext context) {

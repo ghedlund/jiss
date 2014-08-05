@@ -21,7 +21,7 @@ import ca.hedlund.jiss.history.JissHistoryEntry;
 public class SaveBlockPreprocessor implements JissPreprocessor {
 
 	private final static String SAVE_BLOCK_REGEX = 
-			"jiss\\:\\:block save ([ a-zA-Z/_.]*)";
+			"\\:\\:block save ([ a-zA-Z/_.]*)";
 	
 	private final Pattern SAVE_BLOCK_PATTERN =
 			Pattern.compile(SAVE_BLOCK_REGEX);
@@ -30,7 +30,7 @@ public class SaveBlockPreprocessor implements JissPreprocessor {
 	public boolean preprocessCommand(JissModel jissModel, String orig,
 			StringBuffer cmd) {
 		// check prefix first 
-		if(!orig.startsWith("jiss::block save")) return false;
+		if(!orig.startsWith("::block save")) return false;
 		
 		final ScriptContext context = jissModel.getScriptContext();
 		final PrintWriter errWriter = new PrintWriter(context.getErrorWriter());

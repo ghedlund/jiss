@@ -1,2 +1,4 @@
 ca.hedlund.jiss.preprocessor.InfoPreprocessor
-ca.hedlund.jiss.preprocessor.BuiltinPreprocessor
+ca.hedlund.jiss.preprocessor.ExecPreprocessor
+ca.hedlund.jiss.preprocessor.LangPreprocessor
+ca.hedlund.jiss.preprocessor.ResetPreprocessor

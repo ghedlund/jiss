@@ -17,18 +17,18 @@ import ca.hedlund.jiss.JissPreprocessor;
  * Pre-processor for built-in commands.
  *
  */
-public class BuiltinPreprocessor implements JissPreprocessor {
+public class LangPreprocessor implements JissPreprocessor {
 
 	@Override
 	public boolean preprocessCommand(JissModel jissModel, String orig, StringBuffer cmd) {
 		final String c = cmd.toString();
-		if(c.equals("jiss::langs")) {
+		if(c.equals("::langs")) {
 			cmd.setLength(0);
 			printLangs(jissModel, cmd);
-		} else if (c.equals("jiss::lang")) {
+		} else if (c.equals("::lang")) {
 			cmd.setLength(0);
 			printCurrentLang(jissModel, cmd);
-		} else if(c.startsWith("jiss::lang")) {
+		} else if(c.startsWith("::lang")) {
 			cmd.setLength(0);
 			
 			final String parts[] = c.split("\\p{Space}");
@@ -49,11 +49,6 @@ public class BuiltinPreprocessor implements JissPreprocessor {
 					printCurrentLang(jissModel, cmd);
 				}
 			}
-		} else if(c.equals("jiss::reset")) {
-			// reset context
-			final JissContext newContext = new JissContext();
-			jissModel.setScriptContext(newContext);
-			return true;
 		}
 		return false;
 	}

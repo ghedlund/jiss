@@ -17,7 +17,7 @@ import ca.hedlund.jiss.blocks.BlockManager;
 public class ListBlocksPreprocessor implements JissPreprocessor {
 
 	private final static String LIST_BLOCKS_REGEX = 
-			"jiss\\:\\:block list( .*)?";
+			"\\:\\:block list( .*)?";
 	
 	private final Pattern LIST_BLOCKS_PATTERN =
 			Pattern.compile(LIST_BLOCKS_REGEX);
@@ -25,7 +25,7 @@ public class ListBlocksPreprocessor implements JissPreprocessor {
 	@Override
 	public boolean preprocessCommand(JissModel jissModel, String orig,
 			StringBuffer cmd) {
-		if(!orig.startsWith("jiss::block list")) return false;
+		if(!orig.startsWith("::block list")) return false;
 		
 		final ScriptEngine se = jissModel.getScriptEngine();
 		final ScriptEngineFactory seFactory = se.getFactory();

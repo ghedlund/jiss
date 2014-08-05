@@ -18,7 +18,7 @@ import ca.hedlund.jiss.blocks.BlockPath;
 public class LoadBlockPreprocessor implements JissPreprocessor {
 
 	private final static String LOAD_BLOCK_REGEX = 
-			"jiss\\:\\:block ([ a-zA-Z/_.]*)";
+			"\\:\\:block ([ a-zA-Z/_.]*)";
 	
 	private final Pattern LOAD_BLOCK_PATTERN =
 			Pattern.compile(LOAD_BLOCK_REGEX);
@@ -27,7 +27,7 @@ public class LoadBlockPreprocessor implements JissPreprocessor {
 	public boolean preprocessCommand(JissModel jissModel, String orig,
 			StringBuffer cmd) {
 		// check prefix first 
-		if(!orig.startsWith("jiss::block ")) return false;
+		if(!orig.startsWith("::block ")) return false;
 		
 		final ScriptContext context = jissModel.getScriptContext();
 		final PrintWriter errWriter = new PrintWriter(context.getErrorWriter());
