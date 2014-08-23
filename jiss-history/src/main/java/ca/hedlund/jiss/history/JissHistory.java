@@ -105,6 +105,23 @@ public class JissHistory {
 	}
 	
 	/**
+	 * Get current history value.
+	 * 
+	 * @return current history value
+	 */
+	public String getCurrentHistoryEntry() {
+		final int realIdx = entries.size() - itrIdx - 1;
+		String retVal = null;
+		
+		if(realIdx >= 0 && realIdx < entries.size()) {
+			final JissHistoryEntry entry = entries.get(realIdx);
+			retVal = entry.getSource();
+		}
+		
+		return retVal;
+	}
+	
+	/**
 	 * Returns the previous value in the reverse iteration of the
 	 * history.
 	 * 

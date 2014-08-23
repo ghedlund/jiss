@@ -30,14 +30,16 @@ public class JissHistoryBindings implements ExtensionProvider {
 		
 		// add prev entry binding
 		final String prevEntryId = "_prev_history_entry_";
-		final JissInsertPrevEntry prevEntry = new JissInsertPrevEntry(console);
-		final KeyStroke prevKs = KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.CTRL_MASK);
+		final KeyStroke prevKs = KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0);
+		final JissInsertPrevEntry prevEntry = new JissInsertPrevEntry(console, 
+				actionMap.get(inputMap.get(prevKs)));
 		actionMap.put(prevEntryId, prevEntry);
 		inputMap.put(prevKs, prevEntryId);
 		
 		final String nextEntryId = "_next_history_entry_";
-		final JissInsertNextEntry nextEntry = new JissInsertNextEntry(console);
-		final KeyStroke nextKs = KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.CTRL_MASK);
+		final KeyStroke nextKs = KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0);
+		final JissInsertNextEntry nextEntry = new JissInsertNextEntry(console,
+				actionMap.get(inputMap.get(nextKs)));
 		actionMap.put(nextEntryId, nextEntry);
 		inputMap.put(nextKs, nextEntryId);
 		
