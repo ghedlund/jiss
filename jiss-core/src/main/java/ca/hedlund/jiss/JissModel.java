@@ -138,7 +138,7 @@ public class JissModel implements IExtendable {
 	
 	/**
 	 * Set the processor.  The processor is responsible for
-	 * executing provided commands.
+	 * executing provided commands as well as all preprocessors.
 	 */
 	public void setProcessor(JissProcessor processor) {
 		final JissProcessor oldProcessor = this.processor;
@@ -149,7 +149,7 @@ public class JissModel implements IExtendable {
 	public JissProcessor getProcessor() {
 		return this.processor;
 	}
-	
+
 	/**
 	 * Add a preprocessor.
 	 * 

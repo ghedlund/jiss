@@ -76,21 +76,31 @@ public class JissTask implements Runnable {
 		final PrintWriter pwOut = new PrintWriter(stdoutWriter);
 		final PrintWriter pwErr = new PrintWriter(stderrWriter);
 		try {
-			final JissProcessor processor = model.getProcessor();
 			
 			model.getScriptContext().setWriter(pwOut);
 			model.getScriptContext().setErrorWriter(pwErr);
 			
-			final Object val = processor.processCommand(model, cmd);
+			final StringBuffer cmdBuffer = new StringBuffer(cmd);
 			
-			if(val != null) {
-				pwOut.println(val.toString());
+			boolean keepProcessing = true;
+			for(JissPreprocessor preprocessor:model.getPreprocessors()) {
+				keepProcessing &= !preprocessor.preprocessCommand(model, cmd, cmdBuffer);
 			}
-			// insert last val into script context
-			final Bindings bindings = model.getScriptContext().getBindings(ScriptContext.ENGINE_SCOPE);
-			bindings.put(JissContext.LAST_VALUE, val);
+			
+			if(keepProcessing) {			
+				final JissProcessor processor = model.getProcessor();
+				final Object val = processor.processCommand(model, cmd);
+				
+				if(val != null) {
+					pwOut.println(val.toString());
+				}
+				// insert last val into script context
+				final Bindings bindings = model.getScriptContext().getBindings(ScriptContext.ENGINE_SCOPE);
+				bindings.put(JissContext.LAST_VALUE, val);
+			}
 		} catch (JissError err) {
-			err.printStackTrace(pwErr);
+			pwErr.println(err.getLocalizedMessage());
+//			err.printStackTrace(pwErr);
 		}
 	}
 }
