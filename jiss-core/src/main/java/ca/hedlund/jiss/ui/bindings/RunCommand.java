@@ -40,17 +40,35 @@ public class RunCommand extends AbstractAction implements ExtensionProvider {
 	private final static String RUN_COMMAND_ACT_ID =
 			RunCommand.class.getName() + ".runCommand";
 	
+	private String cmd;
+	
 	/**
 	 * console
 	 */
 	private WeakReference<JissConsole> consoleRef;
 	
+	public RunCommand() {
+		super();
+	}
+	
+	public RunCommand(JissConsole console, String cmd) {
+		super();
+		consoleRef = new WeakReference<JissConsole>(console);
+		this.cmd = cmd;
+	}
+	
 	public KeyStroke getKeystroke() {
 		return KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
 	}
 
+	
+	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		runCommand();
+	}
+	
+	public void runCommand() {
 		final JissConsole console = consoleRef.get();
 		final JissModel model = console.getModel();
 		final JissThread currentThread = model.getExtension(JissThread.class);
@@ -59,7 +77,8 @@ public class RunCommand extends AbstractAction implements ExtensionProvider {
 		
 		final JissDocument consoleDoc = 
 				JissDocument.class.cast(console.getDocument());
-		final String cmd = consoleDoc.getPrompt();
+		final String cmd = 
+				(this.cmd == null ? consoleDoc.getPrompt() : this.cmd);
 		
 		final PrintWriter pwOut = 
 				new PrintWriter(new JissDocumentWriter(consoleDoc));

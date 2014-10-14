@@ -12,6 +12,7 @@ import javax.swing.KeyStroke;
 import ca.hedlund.dp.extensions.Extension;
 import ca.hedlund.dp.extensions.ExtensionProvider;
 import ca.hedlund.dp.extensions.IExtendable;
+import ca.hedlund.jiss.DefaultProcessor;
 import ca.hedlund.jiss.JissModel;
 import ca.hedlund.jiss.JissThread;
 import ca.hedlund.jiss.ui.JissConsole;
@@ -47,6 +48,7 @@ public class Cancel extends AbstractAction implements ExtensionProvider {
 		if(currentThread != null) {
 			if(currentThread.isAlive()) {
 				currentThread.stop();
+				model.setProcessor(new DefaultProcessor());
 				model.removeExtension(JissThread.class);
 				console.prompt();
 			}

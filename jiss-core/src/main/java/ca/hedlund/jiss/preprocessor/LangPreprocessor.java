@@ -72,7 +72,7 @@ public class LangPreprocessor implements JissPreprocessor {
 		for(ScriptEngineFactory factory:manager.getEngineFactories()) {
 			final String engineInfo = 
 					factory.getLanguageName() + " " + factory.getLanguageVersion() + ":" + factory.getEngineName() + " " + factory.getEngineVersion();
-			cmds.add(createPrintCmd(model, engineInfo));
+			cmds.add(createPrintCmd(model, engineInfo) + "\n");
 		}
 		final ScriptEngineFactory factory = model.getScriptEngine().getFactory();
 		final String prog = StringEscapeUtils.unescapeJava( factory.getProgram(cmds.toArray(new String[0])) );

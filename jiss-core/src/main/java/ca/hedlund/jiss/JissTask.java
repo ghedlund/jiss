@@ -87,9 +87,9 @@ public class JissTask implements Runnable {
 				keepProcessing &= !preprocessor.preprocessCommand(model, cmd, cmdBuffer);
 			}
 			
-			if(keepProcessing) {			
+			if(keepProcessing && cmdBuffer.toString().length() > 0) {			
 				final JissProcessor processor = model.getProcessor();
-				final Object val = processor.processCommand(model, cmd);
+				final Object val = processor.processCommand(model, cmdBuffer.toString());
 				
 				if(val != null) {
 					pwOut.println(val.toString());
@@ -100,7 +100,6 @@ public class JissTask implements Runnable {
 			}
 		} catch (JissError err) {
 			pwErr.println(err.getLocalizedMessage());
-//			err.printStackTrace(pwErr);
 		}
 	}
 }
