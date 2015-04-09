@@ -39,8 +39,7 @@ import ca.hedlund.jiss.JissPreprocessor;
  * input prompt.
  * 
  */
-public class JissConsole extends JTextPane implements IExtendable,
-		DropTargetListener {
+public class JissConsole extends JTextPane implements IExtendable {
 
 	private static final Logger LOGGER = Logger.getLogger(JissConsole.class
 			.getName());
@@ -80,8 +79,6 @@ public class JissConsole extends JTextPane implements IExtendable,
 
 		init();
 		extensionSupport.initExtensions();
-
-		new DropTarget(this, this);
 	}
 
 	private void init() {
@@ -221,74 +218,74 @@ public class JissConsole extends JTextPane implements IExtendable,
 		return extensionSupport.removeExtension(cap);
 	}
 
-	private final AtomicReference<File> dndFile = 
-			new AtomicReference<File>();
-	@Override
-	public void dragEnter(DropTargetDragEvent dtde) {
-		if (dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
-			try {
-				@SuppressWarnings("unchecked")
-				final List<File> fileList = (List<File>) dtde.getTransferable()
-						.getTransferData(DataFlavor.javaFileListFlavor);
-				// only accept single files
-				if (fileList.size() == 1) {
-					final File f = fileList.get(0);
-					final int lastDot = f.getName().lastIndexOf('.');
-					if (lastDot > 0) {
-						final String ext = f.getName().substring(lastDot + 1);
-						final ScriptEngine se = getModel().engineForExtension(ext);
-						if (se != null) {
-							dtde.acceptDrag(DnDConstants.ACTION_COPY_OR_MOVE);
-							dndFile.set(f);
-						} else {
-							dtde.rejectDrag();
-							dndFile.set(null);
-						}
-					} else {
-						dtde.rejectDrag();
-						dndFile.set(null);
-					}
-				} else {
-					dtde.rejectDrag();
-					dndFile.set(null);
-				}
-			} catch (UnsupportedFlavorException e) {
-				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-				dtde.rejectDrag();
-				dndFile.set(null);
-			} catch (IOException e) {
-				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-				dtde.rejectDrag();
-				dndFile.set(null);
-			}
-		}
-	}
-
-	@Override
-	public void dragOver(DropTargetDragEvent dtde) {
-		
-	}
-
-	@Override
-	public void dropActionChanged(DropTargetDragEvent dtde) {
-	}
-
-	@Override
-	public void dragExit(DropTargetEvent dte) {
-	}
-
-	@Override
-	public void drop(DropTargetDropEvent dtde) {
-		if (dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor)
-				&& dndFile.get() != null) {
-			final File f = dndFile.get();
-			try {
-				getDocument().insertString(getDocument().getLength(), 
-						"::exec \"" + f.getAbsolutePath() + "\"", null);
-			} catch (BadLocationException e) {
-				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-			}
-		}
-	}
+//	private final AtomicReference<File> dndFile = 
+//			new AtomicReference<File>();
+//	@Override
+//	public void dragEnter(DropTargetDragEvent dtde) {
+//		if (dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+//			try {
+//				@SuppressWarnings("unchecked")
+//				final List<File> fileList = (List<File>) dtde.getTransferable()
+//						.getTransferData(DataFlavor.javaFileListFlavor);
+//				// only accept single files
+//				if (fileList.size() == 1) {
+//					final File f = fileList.get(0);
+//					final int lastDot = f.getName().lastIndexOf('.');
+//					if (lastDot > 0) {
+//						final String ext = f.getName().substring(lastDot + 1);
+//						final ScriptEngine se = getModel().engineForExtension(ext);
+//						if (se != null) {
+//							dtde.acceptDrag(DnDConstants.ACTION_COPY_OR_MOVE);
+//							dndFile.set(f);
+//						} else {
+//							dtde.rejectDrag();
+//							dndFile.set(null);
+//						}
+//					} else {
+//						dtde.rejectDrag();
+//						dndFile.set(null);
+//					}
+//				} else {
+//					dtde.rejectDrag();
+//					dndFile.set(null);
+//				}
+//			} catch (UnsupportedFlavorException e) {
+//				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+//				dtde.rejectDrag();
+//				dndFile.set(null);
+//			} catch (IOException e) {
+//				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+//				dtde.rejectDrag();
+//				dndFile.set(null);
+//			}
+//		}
+//	}
+//
+//	@Override
+//	public void dragOver(DropTargetDragEvent dtde) {
+//		
+//	}
+//
+//	@Override
+//	public void dropActionChanged(DropTargetDragEvent dtde) {
+//	}
+//
+//	@Override
+//	public void dragExit(DropTargetEvent dte) {
+//	}
+//
+//	@Override
+//	public void drop(DropTargetDropEvent dtde) {
+//		if (dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor)
+//				&& dndFile.get() != null) {
+//			final File f = dndFile.get();
+//			try {
+//				getDocument().insertString(getDocument().getLength(), 
+//						"::exec \"" + f.getAbsolutePath() + "\"", null);
+//			} catch (BadLocationException e) {
+//				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+//			}
+//		}
+//	}
 
 }
