@@ -26,7 +26,6 @@ import javax.script.ScriptEngineManager;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
-import ca.hedlund.jiss.JissContext;
 import ca.hedlund.jiss.JissModel;
 import ca.hedlund.jiss.JissPreprocessor;
 
@@ -100,8 +99,13 @@ public class LangPreprocessor implements JissPreprocessor {
 	
 	private String createPrintCmd(JissModel model, String toPrint) {
 		final ScriptEngineFactory factory = model.getScriptEngine().getFactory();
-		boolean includeQuotes = factory.getOutputStatement(new String()).indexOf('\"') < 0;
-		final String cmd = factory.getOutputStatement((includeQuotes ? "\"" : "") + toPrint + (includeQuotes ? "\"" : ""));
-		return cmd;
+		try {
+			boolean includeQuotes = factory.getOutputStatement(new String()).indexOf('\"') < 0;
+			final String cmd = 
+					factory.getOutputStatement((includeQuotes ? "\"" : "") + toPrint + (includeQuotes ? "\"" : ""));
+			return cmd;
+		} catch (Exception e) {
+			return "";
+		}
 	}
 }
