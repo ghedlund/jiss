@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>ca.hedlund</groupId>
   <artifactId>jiss</artifactId>
-  <version>0.6</version>
+  <version>1.0</version>
   <name>jiss</name>
   <description>Java interactive scripting shell.</description>
   
@@ -54,20 +54,51 @@
     </snapshotRepository>
   </distributionManagement>
   
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.sourceVersion>11</project.build.sourceVersion>
+		<project.build.targetVersion>11</project.build.targetVersion>
+		
+		<jaxb.version>2.2.11</jaxb.version>
+		<javax.activation.activation.version>1.1.1</javax.activation.activation.version>
+	</properties>		
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+			    <groupId>javax.xml.bind</groupId>
+			    <artifactId>jaxb-api</artifactId>
+			    <version>${jaxb.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>com.sun.xml.bind</groupId>
+			    <artifactId>jaxb-core</artifactId>
+			    <version>${jaxb.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>com.sun.xml.bind</groupId>
+			    <artifactId>jaxb-impl</artifactId>
+			    <version>${jaxb.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>javax.activation</groupId>
+			    <artifactId>activation</artifactId>
+			    <version>${javax.activation.activation.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+  
   <build>
     <plugins>
       <!-- Setup target/source settings for Java compilation -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.7.0</version>
+        <version>3.8.0</version>
         <configuration>
-          <source>9</source>
-          <target>9</target>
-          <compilerArgs>
-						<arg>--add-modules</arg>
-						<arg>java.xml.bind</arg>
-					</compilerArgs>
+          <source>${project.build.sourceVersion}</source>
+          <target>${project.build.targetVersion}</target>
+          <release>${project.build.targetVersion}</release>
         </configuration>
       </plugin>
     </plugins>
