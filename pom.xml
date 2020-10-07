@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>ca.hedlund</groupId>
   <artifactId>jiss</artifactId>
-  <version>1.0</version>
+  <version>1.1</version>
   <name>jiss</name>
   <description>Java interactive scripting shell.</description>
   
@@ -15,13 +15,13 @@
       </snapshots>
       <id>central</id>
       <name>libs-release</name>
-      <url>https://www.phon.ca/artifacts/libs-release</url>
+      <url>http://phon.ucs.mun.ca/artifacts/libs-release</url>
     </repository>
     <repository>
       <snapshots />
       <id>snapshots</id>
       <name>libs-snapshot</name>
-      <url>https://www.phon.ca/artifacts/libs-snapshot</url>
+      <url>http://phon.ucs.mun.ca/artifacts/libs-snapshot</url>
     </repository>
   </repositories>
   <pluginRepositories>
@@ -31,13 +31,13 @@
       </snapshots>
       <id>central</id>
       <name>plugins-release</name>
-      <url>https://www.phon.ca/artifacts/plugins-release</url>
+      <url>http://phon.ucs.mun.ca/artifacts/plugins-release</url>
     </pluginRepository>
     <pluginRepository>
       <snapshots />
       <id>snapshots</id>
       <name>plugins-snapshot</name>
-      <url>https://www.phon.ca/artifacts/plugins-snapshot</url>
+      <url>http://phon.ucs.mun.ca/artifacts/plugins-snapshot</url>
     </pluginRepository>
   </pluginRepositories>
   
@@ -45,45 +45,35 @@
     <repository>
       <id>phon.ca-release</id>
       <name>Phon Release</name>
-      <url>https://www.phon.ca/artifacts/libs-release-local</url>
+      <url>http://phon.ucs.mun.ca/artifacts/libs-release-local</url>
     </repository>
     <snapshotRepository>
       <id>phon.ca-snapshot</id>
       <name>Phon Snapshot</name>
-      <url>https://www.phon.ca/artifacts/libs-snapshot-local</url>
+      <url>http://phon.ucs.mun.ca/artifacts/libs-snapshot-local</url>
     </snapshotRepository>
   </distributionManagement>
   
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.build.sourceVersion>11</project.build.sourceVersion>
-		<project.build.targetVersion>11</project.build.targetVersion>
+		<project.build.sourceVersion>15</project.build.sourceVersion>
+		<project.build.targetVersion>15</project.build.targetVersion>
 		
-		<jaxb.version>2.2.11</jaxb.version>
-		<javax.activation.activation.version>1.1.1</javax.activation.activation.version>
+		<jaxb.version>2.3.3</jaxb.version>
 	</properties>		
 	
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-			    <groupId>javax.xml.bind</groupId>
-			    <artifactId>jaxb-api</artifactId>
-			    <version>${jaxb.version}</version>
+			    <groupId>jakarta.xml.bind</groupId>
+			    <artifactId>jakarta.xml.bind-api</artifactId>
+			    <version>2.3.3</version>
 			</dependency>
-			<dependency>
-			    <groupId>com.sun.xml.bind</groupId>
-			    <artifactId>jaxb-core</artifactId>
-			    <version>${jaxb.version}</version>
-			</dependency>
+			
 			<dependency>
 			    <groupId>com.sun.xml.bind</groupId>
 			    <artifactId>jaxb-impl</artifactId>
 			    <version>${jaxb.version}</version>
-			</dependency>
-			<dependency>
-			    <groupId>javax.activation</groupId>
-			    <artifactId>activation</artifactId>
-			    <version>${javax.activation.activation.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -96,7 +86,6 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.0</version>
         <configuration>
-          <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
           <source>${project.build.sourceVersion}</source>
           <target>${project.build.targetVersion}</target>
           <release>${project.build.targetVersion}</release>
