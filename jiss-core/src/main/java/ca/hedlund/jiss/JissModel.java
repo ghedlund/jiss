@@ -20,6 +20,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.script.ScriptContext;
@@ -99,8 +100,11 @@ public class JissModel implements IExtendable {
 		
 		// setup a default script engine
 		final ScriptEngineManager manager = new ScriptEngineManager(classLoader);
-		final ScriptEngine scriptEngine = manager.getEngineByExtension("js");
-		setScriptEngine(scriptEngine);
+		Optional<ScriptEngineFactory> optionalFactory = manager.getEngineFactories().stream().findFirst();
+		if(optionalFactory.isPresent()) {
+			final ScriptEngine scriptEngine = optionalFactory.get().getScriptEngine(); 
+			setScriptEngine(scriptEngine);
+		}
 		
 		setScriptContext(new JissContext());
 		scriptEngine.setContext(getScriptContext());
