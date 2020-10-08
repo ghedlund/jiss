@@ -15,14 +15,12 @@
  */
 package ca.hedlund.jiss.preprocessor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 
 import ca.hedlund.jiss.JissModel;
 import ca.hedlund.jiss.JissPreprocessor;
@@ -70,40 +68,31 @@ public class LangPreprocessor implements JissPreprocessor {
 	}
 	
 	private void printCurrentLang(JissModel model, StringBuffer cmd) {
-		final List<String> cmds = new ArrayList<String>();
-		
 		final ScriptEngineFactory factory = model.getScriptEngine().getFactory();
 		final String engineInfo = 
 				factory.getLanguageName() + " " + factory.getLanguageVersion() + ":" + factory.getEngineName() + " " + factory.getEngineVersion();
-		cmds.add(createPrintCmd(model, engineInfo));
-		
-		final String prog = StringEscapeUtils.unescapeJava(	factory.getProgram(cmds.toArray(new String[0])) );
-		cmd.append(prog);
+		try {
+			model.getScriptContext().getWriter().write(engineInfo);
+			model.getScriptContext().getWriter().write("\n");
+			model.getScriptContext().getWriter().flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}		
 	}
 	
 	private void printLangs(JissModel model, StringBuffer cmd) {
 		final ScriptEngineManager manager = new ScriptEngineManager(JissModel.class.getClassLoader());
-		final List<String> cmds = new ArrayList<String>();
-		
 		for(ScriptEngineFactory factory:manager.getEngineFactories()) {
 			final String engineInfo = 
 					factory.getLanguageName() + " " + factory.getLanguageVersion() + ":" + factory.getEngineName() + " " + factory.getEngineVersion();
-			cmds.add(createPrintCmd(model, engineInfo));
+			try {
+				model.getScriptContext().getWriter().write(engineInfo);
+				model.getScriptContext().getWriter().write("\n");
+				model.getScriptContext().getWriter().flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-		final ScriptEngineFactory factory = model.getScriptEngine().getFactory();
-		final String prog = StringEscapeUtils.unescapeJava( factory.getProgram(cmds.toArray(new String[0])) );
-		cmd.append(prog);
 	}
 	
-	private String createPrintCmd(JissModel model, String toPrint) {
-		final ScriptEngineFactory factory = model.getScriptEngine().getFactory();
-		try {
-			boolean includeQuotes = factory.getOutputStatement(new String()).indexOf('\"') < 0;
-			final String cmd = 
-					factory.getOutputStatement((includeQuotes ? "\"" : "") + toPrint + (includeQuotes ? "\"" : ""));
-			return cmd;
-		} catch (Exception e) {
-			return "";
-		}
-	}
 }

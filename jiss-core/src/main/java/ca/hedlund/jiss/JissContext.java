@@ -15,6 +15,8 @@
  */
 package ca.hedlund.jiss;
 
+import java.util.function.Predicate;
+
 import javax.script.SimpleScriptContext;
 
 public class JissContext extends SimpleScriptContext {
