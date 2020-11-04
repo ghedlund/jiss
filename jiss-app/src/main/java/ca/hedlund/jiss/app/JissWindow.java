@@ -13,39 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ca.hedlund.jiss;
+package ca.hedlund.jiss.app;
+
+import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 
-import ca.hedlund.jiss.ui.JissWindow;
+import ca.hedlund.jiss.*;
+import ca.hedlund.jiss.ui.*;
 
 /**
- * Displays a JissConsole in a window.
- *
+ * Jiss window
  */
-public class JissApp {
-	
-	private JissWindow window;
-	
-	private void createAndShow() {
-		window = new JissWindow();
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.pack();
-		window.setVisible(true);
-	}
-	
-	public static void main(String[] args) {
-		// create and display a JissWindow
-		final JissApp app = new JissApp();
-		final Runnable runnable = new Runnable() {
-			
-			@Override
-			public void run() {
-				app.createAndShow();
-			}
-		};
-		SwingUtilities.invokeLater(runnable);
-	}
+public class JissWindow extends JFrame {
 
+	private final JissModel model;
+	
+	private final JissConsole console;
+	
+	public JissWindow() {
+		super("Jiss");
+		
+		model = new JissModel();
+		console = new JissConsole(model);
+		setupWindow();
+	}
+	
+	private void setupWindow() {
+		setLayout(new BorderLayout());
+		add(console, BorderLayout.CENTER);
+	}
+	
 }
