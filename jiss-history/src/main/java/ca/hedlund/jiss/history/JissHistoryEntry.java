@@ -15,9 +15,7 @@
  */
 package ca.hedlund.jiss.history;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
+import jakarta.xml.bind.annotation.*;
 
 /**
  * History entry.

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="jiss-app" />
+        <module name="jiss-core" />
+        <module name="jiss-history" />
+        <module name="jiss-rsyntaxarea-input" />
+        <module name="jiss-blocks" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="jiss" target="17" />
+      <module name="jiss-app" target="17" />
+      <module name="jiss-blocks" target="17" />
+      <module name="jiss-core" target="17" />
+      <module name="jiss-history" target="17" />
+      <module name="jiss-rsyntaxarea-input" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

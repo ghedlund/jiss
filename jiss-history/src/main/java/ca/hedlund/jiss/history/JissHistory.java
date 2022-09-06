@@ -24,9 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.*;
 
 import ca.hedlund.dp.extensions.Extension;
 import ca.hedlund.dp.extensions.ExtensionProvider;

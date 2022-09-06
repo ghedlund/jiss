@@ -17,7 +17,7 @@ package ca.hedlund.jiss.blocks;
 
 import java.util.Date;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * Class representing a saved block of code.
