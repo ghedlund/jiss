@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2012-2018 Gregory Hedlund
  *
@@ -64,4 +63,3 @@ public class ProcessorEvent extends EventObject {
         return error != null;
     }
 }
-

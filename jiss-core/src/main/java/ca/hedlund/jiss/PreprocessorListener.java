@@ -36,4 +36,3 @@ public interface PreprocessorListener extends EventListener {
      */
     void preprocessingEnded(PreprocessorEvent event);
 }
-

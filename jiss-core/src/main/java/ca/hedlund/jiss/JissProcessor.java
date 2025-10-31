@@ -33,4 +33,18 @@ public interface JissProcessor {
 	public Object processCommand(JissModel jissModel, String cmd)
 		throws JissError;
 
+	/**
+	 * Add a processor listener.
+	 *
+	 * @param listener the listener to add
+	 */
+	public void addProcessorListener(ProcessorListener listener);
+
+	/**
+	 * Remove a processor listener.
+	 *
+	 * @param listener the listener to remove
+	 */
+	public void removeProcessorListener(ProcessorListener listener);
+
 }

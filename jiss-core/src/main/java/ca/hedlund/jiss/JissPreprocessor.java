@@ -39,4 +39,18 @@ public interface JissPreprocessor {
 	 */
 	public boolean preprocessCommand(JissModel jissModel, String orig, StringBuffer cmd);
 
+	/**
+	 * Add a preprocessor listener.
+	 *
+	 * @param listener the listener to add
+	 */
+	public void addPreprocessorListener(PreprocessorListener listener);
+
+	/**
+	 * Remove a preprocessor listener.
+	 *
+	 * @param listener the listener to remove
+	 */
+	public void removePreprocessorListener(PreprocessorListener listener);
+
 }

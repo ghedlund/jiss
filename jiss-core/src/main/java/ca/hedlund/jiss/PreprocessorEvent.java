@@ -51,4 +51,3 @@ public class PreprocessorEvent extends EventObject {
         return handled;
     }
 }
-
