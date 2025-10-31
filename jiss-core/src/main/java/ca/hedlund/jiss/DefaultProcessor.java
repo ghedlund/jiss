@@ -17,6 +17,8 @@ package ca.hedlund.jiss;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Default jiss processor.
@@ -24,18 +26,51 @@ import javax.script.ScriptException;
  */
 public class DefaultProcessor implements JissProcessor {
 
+	private final List<ProcessorListener> listeners = new CopyOnWriteArrayList<>();
+
+	public void addProcessorListener(ProcessorListener listener) {
+		if (listener != null && !listeners.contains(listener)) {
+			listeners.add(listener);
+		}
+	}
+
+	public void removeProcessorListener(ProcessorListener listener) {
+		listeners.remove(listener);
+	}
+
+	protected void fireProcessingStarted(JissModel jissModel, String cmd) {
+		ProcessorEvent event = new ProcessorEvent(this, jissModel, cmd);
+		for (ProcessorListener listener : listeners) {
+			listener.processingStarted(event);
+		}
+	}
+
+	protected void fireProcessingEnded(JissModel jissModel, String cmd, Object result, JissError error) {
+		ProcessorEvent event = new ProcessorEvent(this, jissModel, cmd, result, error);
+		for (ProcessorListener listener : listeners) {
+			listener.processingEnded(event);
+		}
+	}
+
 	@Override
 	public Object processCommand(JissModel jissModel, String cmd)
 			throws JissError {
+		fireProcessingStarted(jissModel, cmd);
+
 		Object retVal = null;
-		
+		JissError error = null;
+
 		final ScriptEngine engine = jissModel.getScriptEngine();
 		try {
 			retVal = engine.eval(cmd, jissModel.getScriptContext());
 		} catch (ScriptException se) {
-			throw new JissError(se);
+			error = new JissError(se);
+			throw error;
 		} catch (Exception e) {
-			throw new JissError(e);
+			error = new JissError(e);
+			throw error;
+		} finally {
+			fireProcessingEnded(jissModel, cmd, retVal, error);
 		}
 		
 		return retVal;

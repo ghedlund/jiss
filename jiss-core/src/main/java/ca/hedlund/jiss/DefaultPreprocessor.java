@@ -17,6 +17,8 @@ package ca.hedlund.jiss;
 
 import java.util.Iterator;
 import java.util.ServiceLoader;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Default preprocessor that loads preprocessors using
@@ -24,8 +26,36 @@ import java.util.ServiceLoader;
  */
 public class DefaultPreprocessor implements JissPreprocessor {
 
+	private final List<PreprocessorListener> listeners = new CopyOnWriteArrayList<>();
+
+	public void addPreprocessorListener(PreprocessorListener listener) {
+		if (listener != null && !listeners.contains(listener)) {
+			listeners.add(listener);
+		}
+	}
+
+	public void removePreprocessorListener(PreprocessorListener listener) {
+		listeners.remove(listener);
+	}
+
+	protected void firePreprocessingStarted(JissModel jissModel, String orig, StringBuffer cmd) {
+		PreprocessorEvent event = new PreprocessorEvent(this, jissModel, orig, cmd, false);
+		for (PreprocessorListener listener : listeners) {
+			listener.preprocessingStarted(event);
+		}
+	}
+
+	protected void firePreprocessingEnded(JissModel jissModel, String orig, StringBuffer cmd, boolean handled) {
+		PreprocessorEvent event = new PreprocessorEvent(this, jissModel, orig, cmd, handled);
+		for (PreprocessorListener listener : listeners) {
+			listener.preprocessingEnded(event);
+		}
+	}
+
 	@Override
 	public boolean preprocessCommand(JissModel jissModel, String orig, StringBuffer cmd) {
+		firePreprocessingStarted(jissModel, orig, cmd);
+
 		final ClassLoader cl = jissModel.getClass().getClassLoader();
 		final ServiceLoader<JissPreprocessor> loader =
 				ServiceLoader.load(JissPreprocessor.class, cl);
@@ -37,6 +67,7 @@ public class DefaultPreprocessor implements JissPreprocessor {
 			processed |= preprocessor.preprocessCommand(jissModel, orig, cmd);
 		}
 		
+		firePreprocessingEnded(jissModel, orig, cmd, processed);
 		return processed;
 	}
 

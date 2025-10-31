@@ -13,13 +13,5 @@
         <module name="jiss-blocks" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="jiss" target="17" />
-      <module name="jiss-app" target="17" />
-      <module name="jiss-blocks" target="17" />
-      <module name="jiss-core" target="17" />
-      <module name="jiss-history" target="17" />
-      <module name="jiss-rsyntaxarea-input" target="17" />
-    </bytecodeTargetLevel>
   </component>
 </project>
