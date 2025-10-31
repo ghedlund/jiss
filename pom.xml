@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>ca.hedlund</groupId>
   <artifactId>jiss</artifactId>
-  <version>1.3.2</version>
+  <version>1.3.3</version>
   <name>jiss</name>
   <description>Java interactive scripting shell.</description>
   

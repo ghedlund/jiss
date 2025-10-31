@@ -3,7 +3,7 @@
   <parent>
     <artifactId>jiss</artifactId>
     <groupId>ca.hedlund</groupId>
-    <version>1.3.2</version>
+    <version>1.3.3</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>jiss-core</artifactId>
