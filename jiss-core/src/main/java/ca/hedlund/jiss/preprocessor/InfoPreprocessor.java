@@ -29,8 +29,8 @@ import ca.hedlund.jiss.JissPreprocessor;
  * Which prints basic information about jiss.
  *
  */
-public class InfoPreprocessor implements JissPreprocessor {
-	
+public class InfoPreprocessor extends AbstractPreprocessor {
+
 	private final static String INFO_TXT = "Java Interactive Scripting Shell (jiss) 0.1";
 
 	private final static String INFO_CMD = "jiss::info";

@@ -19,7 +19,7 @@ import ca.hedlund.jiss.JissContext;
 import ca.hedlund.jiss.JissModel;
 import ca.hedlund.jiss.JissPreprocessor;
 
-public class ResetPreprocessor implements JissPreprocessor {
+public class ResetPreprocessor extends AbstractPreprocessor {
 
 	@Override
 	public boolean preprocessCommand(JissModel jissModel, String orig,

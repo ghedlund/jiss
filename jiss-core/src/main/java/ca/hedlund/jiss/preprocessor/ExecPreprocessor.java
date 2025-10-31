@@ -25,8 +25,8 @@ import ca.hedlund.jiss.JissModel;
 import ca.hedlund.jiss.JissPreprocessor;
 import ca.hedlund.jiss.ScriptURLProcessor;
 
-public class ExecPreprocessor implements JissPreprocessor {
-	
+public class ExecPreprocessor extends AbstractPreprocessor {
+
 	private static final Logger LOGGER = Logger
 			.getLogger(ExecPreprocessor.class.getName());
 

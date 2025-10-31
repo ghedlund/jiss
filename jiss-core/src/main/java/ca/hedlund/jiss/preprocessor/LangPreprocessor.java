@@ -29,7 +29,7 @@ import ca.hedlund.jiss.JissPreprocessor;
  * Pre-processor for built-in commands.
  *
  */
-public class LangPreprocessor implements JissPreprocessor {
+public class LangPreprocessor extends AbstractPreprocessor {
 
 	@Override
 	public boolean preprocessCommand(JissModel jissModel, String orig, StringBuffer cmd) {
