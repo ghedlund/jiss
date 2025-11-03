@@ -39,6 +39,8 @@ public class InfoPreprocessor extends AbstractPreprocessor {
 	public boolean preprocessCommand(JissModel jissModel, String orig, StringBuffer cmd) {
 		final String c  = cmd.toString();
 		if(c.equals(INFO_CMD)) {
+			firePreprocessingStarted(jissModel, orig, cmd);
+
 			// clear string
 			cmd.setLength(0);
 			
@@ -55,6 +57,8 @@ public class InfoPreprocessor extends AbstractPreprocessor {
 			final String program = seFactory.getProgram(infoCmd, langCmd, engineCmd);
 			cmd.append(
 					StringEscapeUtils.unescapeJava(program)) ;
+
+			firePreprocessingEnded(jissModel, orig, cmd, false);
 		}
 		// we want the scripting engine to handle the replaced command
 		return false;

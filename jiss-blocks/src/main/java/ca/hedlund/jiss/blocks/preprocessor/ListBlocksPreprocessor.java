@@ -23,13 +23,14 @@ import java.util.regex.Pattern;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 
+import ca.hedlund.jiss.preprocessor.AbstractPreprocessor;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import ca.hedlund.jiss.JissModel;
 import ca.hedlund.jiss.JissPreprocessor;
 import ca.hedlund.jiss.blocks.BlockManager;
 
-public class ListBlocksPreprocessor implements JissPreprocessor {
+public class ListBlocksPreprocessor extends AbstractPreprocessor {
 
 	private final static String LIST_BLOCKS_REGEX = 
 			"\\:\\:block list( .*)?";
@@ -42,19 +43,21 @@ public class ListBlocksPreprocessor implements JissPreprocessor {
 			StringBuffer cmd) {
 		if(!orig.startsWith("::block list")) return false;
 		
+		firePreprocessingStarted(jissModel, orig, cmd);
+
 		final ScriptEngine se = jissModel.getScriptEngine();
 		final ScriptEngineFactory seFactory = se.getFactory();
 
 		final boolean incnl = !seFactory.getOutputStatement("").startsWith("println");
-		
+
 		final List<String> blockInfoCmds = new ArrayList<String>();
 		blockInfoCmds.add(seFactory.getOutputStatement("Available blocks:" + (incnl ? "\\n" : "")));
-		
+
 		final Matcher matcher = LIST_BLOCKS_PATTERN.matcher(orig);
 		if(matcher.matches()) {
 			final String blockNameRegex = matcher.group(1);
 			final BlockManager bm = new BlockManager();
-			
+
 			for(String blockName:bm.getBlocks()) {
 				boolean printBlock = true;
 				if(blockNameRegex != null) {
@@ -65,13 +68,15 @@ public class ListBlocksPreprocessor implements JissPreprocessor {
 				}
 			}
 		}
-		
+
 		final String program = seFactory.getProgram(blockInfoCmds.toArray(new String[0]));
 		cmd.setLength(0);
 		cmd.append(
 				StringEscapeUtils.unescapeJava(program)) ;
-		
+
+		firePreprocessingEnded(jissModel, orig, cmd, false);
+
 		return false;
 	}
-	
+
 }

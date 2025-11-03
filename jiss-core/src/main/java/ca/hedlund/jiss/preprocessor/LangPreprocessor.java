@@ -35,12 +35,17 @@ public class LangPreprocessor extends AbstractPreprocessor {
 	public boolean preprocessCommand(JissModel jissModel, String orig, StringBuffer cmd) {
 		final String c = cmd.toString();
 		if(c.equals("::langs")) {
+			firePreprocessingStarted(jissModel, orig, cmd);
 			cmd.setLength(0);
 			printLangs(jissModel, cmd);
+			firePreprocessingEnded(jissModel, orig, cmd, false);
 		} else if (c.equals("::lang")) {
+			firePreprocessingStarted(jissModel, orig, cmd);
 			cmd.setLength(0);
 			printCurrentLang(jissModel, cmd);
+			firePreprocessingEnded(jissModel, orig, cmd, false);
 		} else if(c.startsWith("::lang")) {
+			firePreprocessingStarted(jissModel, orig, cmd);
 			cmd.setLength(0);
 			
 			final String parts[] = c.split("\\p{Space}");
@@ -63,6 +68,7 @@ public class LangPreprocessor extends AbstractPreprocessor {
 					printCurrentLang(jissModel, cmd);
 				}
 			}
+			firePreprocessingEnded(jissModel, orig, cmd, false);
 		}
 		return false;
 	}

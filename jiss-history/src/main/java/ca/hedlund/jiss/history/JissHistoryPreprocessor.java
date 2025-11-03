@@ -19,12 +19,13 @@ import java.io.IOException;
 
 import ca.hedlund.jiss.JissModel;
 import ca.hedlund.jiss.JissPreprocessor;
+import ca.hedlund.jiss.preprocessor.AbstractPreprocessor;
 
 /**
  * Adds commands to history.
  *
  */
-public class JissHistoryPreprocessor implements JissPreprocessor {
+public class JissHistoryPreprocessor extends AbstractPreprocessor {
 	
 	final JissHistoryManager historyManager = new JissHistoryManager();
 

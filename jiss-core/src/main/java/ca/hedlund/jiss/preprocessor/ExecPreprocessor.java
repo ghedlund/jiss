@@ -34,6 +34,8 @@ public class ExecPreprocessor extends AbstractPreprocessor {
 	public boolean preprocessCommand(JissModel jissModel, String orig,
 			StringBuffer cmd) {
 		if(orig.startsWith("::exec ")) {
+			firePreprocessingStarted(jissModel, orig, cmd);
+
 			String scriptLocation = orig.substring("::exec ".length()).trim();
 			if(scriptLocation.startsWith("\"")) {
 				scriptLocation = scriptLocation.substring(1, 
@@ -55,6 +57,8 @@ public class ExecPreprocessor extends AbstractPreprocessor {
 			if(url != null) {
 				jissModel.setProcessor(new ScriptURLProcessor(url));
 			}
+
+			firePreprocessingEnded(jissModel, orig, cmd, false);
 		}
 		return false;
 	}

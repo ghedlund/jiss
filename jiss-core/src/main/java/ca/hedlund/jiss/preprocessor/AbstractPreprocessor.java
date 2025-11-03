@@ -18,7 +18,9 @@ package ca.hedlund.jiss.preprocessor;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.hedlund.jiss.JissModel;
 import ca.hedlund.jiss.JissPreprocessor;
+import ca.hedlund.jiss.PreprocessorEvent;
 import ca.hedlund.jiss.PreprocessorListener;
 
 /**
@@ -49,5 +51,33 @@ public abstract class AbstractPreprocessor implements JissPreprocessor {
 		return new ArrayList<>(listeners);
 	}
 
-}
+	/**
+	 * Fire preprocessing started event to all listeners.
+	 *
+	 * @param jissModel the Jiss model
+	 * @param originalCommand the original command being preprocessed
+	 * @param command the command buffer
+	 */
+	protected void firePreprocessingStarted(JissModel jissModel, String originalCommand, StringBuffer command) {
+		PreprocessorEvent event = new PreprocessorEvent(this, jissModel, originalCommand, command, false);
+		for (PreprocessorListener listener : getListeners()) {
+			listener.preprocessingStarted(event);
+		}
+	}
 
+	/**
+	 * Fire preprocessing completed event to all listeners.
+	 *
+	 * @param jissModel the Jiss model
+	 * @param originalCommand the original command
+	 * @param command the processed command buffer
+	 * @param handled whether the command was handled
+	 */
+	protected void firePreprocessingEnded(JissModel jissModel, String originalCommand, StringBuffer command, boolean handled) {
+		PreprocessorEvent event = new PreprocessorEvent(this, jissModel, originalCommand, command, handled);
+		for (PreprocessorListener listener : getListeners()) {
+			listener.preprocessingEnded(event);
+		}
+	}
+
+}

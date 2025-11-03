@@ -33,6 +33,7 @@ import ca.hedlund.dp.extensions.ExtensionSupport;
 import ca.hedlund.dp.extensions.IExtendable;
 import ca.hedlund.jiss.JissModel;
 import ca.hedlund.jiss.JissPreprocessor;
+import ca.hedlund.jiss.preprocessor.AbstractPreprocessor;
 
 /**
  * The console displays output from the script engine as well as providing an
@@ -156,7 +157,7 @@ public class JissConsole extends JTextPane implements IExtendable {
 	/**
 	 * Handles clering the console
 	 */
-	private JissPreprocessor clearPreprocessor = new JissPreprocessor() {
+	private JissPreprocessor clearPreprocessor = new AbstractPreprocessor() {
 		@Override
 		public boolean preprocessCommand(JissModel jissModel, String orig,
 				StringBuffer cmd) {

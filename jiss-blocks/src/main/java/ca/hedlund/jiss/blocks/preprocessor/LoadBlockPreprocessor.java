@@ -29,8 +29,9 @@ import ca.hedlund.jiss.JissPreprocessor;
 import ca.hedlund.jiss.blocks.Block;
 import ca.hedlund.jiss.blocks.BlockManager;
 import ca.hedlund.jiss.blocks.BlockPath;
+import ca.hedlund.jiss.preprocessor.AbstractPreprocessor;
 
-public class LoadBlockPreprocessor implements JissPreprocessor {
+public class LoadBlockPreprocessor extends AbstractPreprocessor {
 
 	private final static String LOAD_BLOCK_REGEX = 
 			"\\:\\:block ([ a-zA-Z/_.]*)";
@@ -44,6 +45,8 @@ public class LoadBlockPreprocessor implements JissPreprocessor {
 		// check prefix first 
 		if(!orig.startsWith("::block ")) return false;
 		
+		firePreprocessingStarted(jissModel, orig, cmd);
+
 		final ScriptContext context = jissModel.getScriptContext();
 		final PrintWriter errWriter = new PrintWriter(context.getErrorWriter());
 		
@@ -56,11 +59,13 @@ public class LoadBlockPreprocessor implements JissPreprocessor {
 				final Block block = blockManager.loadBlock(bp);
 				final Bindings bindings = context.getBindings(ScriptContext.ENGINE_SCOPE);
 				bindings.put(JissContext.PROMPT_VALUE, block.getSource());
+				firePreprocessingEnded(jissModel, orig, cmd, true);
 			} catch (IOException e) {
 				errWriter.println(e.getLocalizedMessage());
 			}
 		} else {
-			errWriter.println("Syntax error.  String must match pattern: " + LOAD_BLOCK_REGEX);
+			String errorMsg = "Syntax error.  String must match pattern: " + LOAD_BLOCK_REGEX;
+			errWriter.println(errorMsg);
 		}
 		
 		// prevent from running in script engine

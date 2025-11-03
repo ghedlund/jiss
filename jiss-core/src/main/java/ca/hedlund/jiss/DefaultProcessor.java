@@ -17,40 +17,12 @@ package ca.hedlund.jiss;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Default jiss processor.
  *
  */
-public class DefaultProcessor implements JissProcessor {
-
-	private final List<ProcessorListener> listeners = new CopyOnWriteArrayList<>();
-
-	public void addProcessorListener(ProcessorListener listener) {
-		if (listener != null && !listeners.contains(listener)) {
-			listeners.add(listener);
-		}
-	}
-
-	public void removeProcessorListener(ProcessorListener listener) {
-		listeners.remove(listener);
-	}
-
-	protected void fireProcessingStarted(JissModel jissModel, String cmd) {
-		ProcessorEvent event = new ProcessorEvent(this, jissModel, cmd);
-		for (ProcessorListener listener : listeners) {
-			listener.processingStarted(event);
-		}
-	}
-
-	protected void fireProcessingEnded(JissModel jissModel, String cmd, Object result, JissError error) {
-		ProcessorEvent event = new ProcessorEvent(this, jissModel, cmd, result, error);
-		for (ProcessorListener listener : listeners) {
-			listener.processingEnded(event);
-		}
-	}
+public class DefaultProcessor extends Processor {
 
 	@Override
 	public Object processCommand(JissModel jissModel, String cmd)

@@ -25,9 +25,11 @@ public class ResetPreprocessor extends AbstractPreprocessor {
 	public boolean preprocessCommand(JissModel jissModel, String orig,
 			StringBuffer cmd) {
 		if(orig.equals("::reset")) {
+			firePreprocessingStarted(jissModel, orig, cmd);
 			// reset context
 			final JissContext newContext = new JissContext();
 			jissModel.setScriptContext(newContext);
+			firePreprocessingEnded(jissModel, orig, cmd, true);
 			return true;
 		}
 		return false;

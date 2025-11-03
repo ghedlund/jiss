@@ -32,8 +32,9 @@ import ca.hedlund.jiss.blocks.BlockManager;
 import ca.hedlund.jiss.blocks.BlockPath;
 import ca.hedlund.jiss.history.JissHistory;
 import ca.hedlund.jiss.history.JissHistoryEntry;
+import ca.hedlund.jiss.preprocessor.AbstractPreprocessor;
 
-public class SaveBlockPreprocessor implements JissPreprocessor {
+public class SaveBlockPreprocessor extends AbstractPreprocessor {
 
 	private final static String SAVE_BLOCK_REGEX = 
 			"\\:\\:block save ([ a-zA-Z/_.]*)";
@@ -47,6 +48,8 @@ public class SaveBlockPreprocessor implements JissPreprocessor {
 		// check prefix first 
 		if(!orig.startsWith("::block save")) return false;
 		
+		firePreprocessingStarted(jissModel, orig, cmd);
+
 		final ScriptContext context = jissModel.getScriptContext();
 		final PrintWriter errWriter = new PrintWriter(context.getErrorWriter());
 		final PrintWriter outWriter = new PrintWriter(context.getWriter());
@@ -70,18 +73,23 @@ public class SaveBlockPreprocessor implements JissPreprocessor {
 					final BlockManager blockManager = new BlockManager();
 					try {
 						blockManager.saveBlock(bp, block);
-						outWriter.println("Most recent history entry saved as block '" + blockPathString + "'");
+						String successMsg = "Most recent history entry saved as block '" + blockPathString + "'";
+						outWriter.println(successMsg);
+						firePreprocessingEnded(jissModel, orig, cmd, true);
 					} catch (IOException e) {
 						errWriter.println(e.getLocalizedMessage());
 					}
 				} else {
-					errWriter.println("History is empty.");
+					String errorMsg = "History is empty.";
+					errWriter.println(errorMsg);
 				}
 			} else {
-				errWriter.println("History not available.");
+				String errorMsg = "History not available.";
+				errWriter.println(errorMsg);
 			}
 		} else {
-			errWriter.println("Syntax error.  String must match pattern: " + SAVE_BLOCK_REGEX);
+			String errorMsg = "Syntax error.  String must match pattern: " + SAVE_BLOCK_REGEX;
+			errWriter.println(errorMsg);
 		}
 		
 		// prevent from running in script engine

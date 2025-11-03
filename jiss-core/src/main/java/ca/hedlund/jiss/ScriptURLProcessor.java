@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
-public class ScriptURLProcessor implements JissProcessor {
+public class ScriptURLProcessor extends Processor {
 
 	private static final Logger LOGGER = Logger
 			.getLogger(ScriptURLProcessor.class.getName());
@@ -40,31 +40,40 @@ public class ScriptURLProcessor implements JissProcessor {
 	@Override
 	public Object processCommand(JissModel jissModel, String cmd)
 			throws JissError {
-		final String ext = getURLExtension(url);
-		if(ext == null)
-			err(jissModel, "Unable to determine script extension from path '" + url.getPath() + "'");
-	
-		final ScriptEngine engine = jissModel.engineForExtension(ext);
-		if(engine == null)
-			err(jissModel, "No script engine available for extension '" + ext + "'");
-		
+		fireProcessingStarted(jissModel, cmd);
+
 		Object retVal = null;
-		
+		JissError error = null;
+
 		try {
+			final String ext = getURLExtension(url);
+			if(ext == null)
+				err(jissModel, "Unable to determine script extension from path '" + url.getPath() + "'");
+
+			final ScriptEngine engine = jissModel.engineForExtension(ext);
+			if(engine == null)
+				err(jissModel, "No script engine available for extension '" + ext + "'");
+
 			final InputStream is = url.openStream();
 			final InputStreamReader reader = new InputStreamReader(is, "UTF-8");
 			retVal = engine.eval(reader, jissModel.getScriptContext());
 		} catch (IOException e) {
+			error = new JissError(e);
 			err(jissModel, e);
 		} catch (ScriptException e) {
+			error = new JissError(e);
 			err(jissModel, e);
+		} catch (JissError e) {
+			error = e;
+			throw e;
+		} finally {
+			fireProcessingEnded(jissModel, cmd, retVal, error);
+			jissModel.setProcessor(new DefaultProcessor());
 		}
-		
-		jissModel.setProcessor(new DefaultProcessor());
-		
+
 		return retVal;
 	}
-	
+
 	private void err(JissModel model, String msg) throws JissError {
 		model.setProcessor(new DefaultProcessor());
 		throw new JissError(msg);
