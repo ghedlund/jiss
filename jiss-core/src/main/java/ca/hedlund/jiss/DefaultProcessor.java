@@ -15,8 +15,13 @@
  */
 package ca.hedlund.jiss;
 
+import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Default jiss processor.
@@ -34,18 +39,23 @@ public class DefaultProcessor extends Processor {
 
 		final ScriptEngine engine = jissModel.getScriptEngine();
 		try {
-			retVal = engine.eval(cmd, jissModel.getScriptContext());
-		} catch (ScriptException se) {
-			error = new JissError(se);
-			throw error;
-		} catch (Exception e) {
+			retVal = execWithFuture(engine, cmd, jissModel);
+		} catch (InterruptedException | ExecutionException e) {
 			error = new JissError(e);
 			throw error;
 		} finally {
 			fireProcessingEnded(jissModel, cmd, retVal, error);
+            jissModel.putExtension(Future.class, null);
 		}
 		
 		return retVal;
 	}
+
+    private static Object execWithFuture(final ScriptEngine engine, final String script, final JissModel jissModel) throws ExecutionException, InterruptedException {
+        final Callable<Object> val = () -> engine.eval(script, jissModel.getScriptContext());
+        final Future<Object> f = Executors.newCachedThreadPool().submit(val);
+        jissModel.putExtension(Future.class, f);
+        return f.get();
+    }
 
 }

@@ -18,6 +18,7 @@ package ca.hedlund.jiss.ui.bindings;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.lang.ref.WeakReference;
+import java.util.concurrent.Future;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -69,14 +70,9 @@ public class Cancel extends AbstractAction implements ExtensionProvider {
 		final JissConsole console = consoleRef.get();
         if(console == null) return;
 		final JissModel model = console.getModel();
-		final JissThread currentThread = model.getExtension(JissThread.class);
-		if(currentThread != null) {
-			if(currentThread.isAlive()) {
-				currentThread.interrupt();
-				model.setProcessor(new DefaultProcessor());
-				model.removeExtension(JissThread.class);
-				console.prompt();
-			}
+		final Future<Object> currentFuture = model.getExtension(Future.class);
+		if(currentFuture != null) {
+			currentFuture.cancel(true);
 		} else {
 			// cancel current insertion
 			final JissDocument doc = JissDocument.class.cast(console.getDocument());
