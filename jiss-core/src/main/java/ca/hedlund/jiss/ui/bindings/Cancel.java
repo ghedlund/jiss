@@ -54,6 +54,10 @@ public class Cancel extends AbstractAction implements ExtensionProvider {
 		return KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_MASK);
 	}
 
+    public Cancel() {
+        super();
+    }
+
     public Cancel(JissConsole console) {
         super();
         this.consoleRef = new WeakReference<>(console);
@@ -63,6 +67,7 @@ public class Cancel extends AbstractAction implements ExtensionProvider {
 	public void actionPerformed(ActionEvent arg0) {
 		// check to see if  there is a current thread running
 		final JissConsole console = consoleRef.get();
+        if(console == null) return;
 		final JissModel model = console.getModel();
 		final JissThread currentThread = model.getExtension(JissThread.class);
 		if(currentThread != null) {
