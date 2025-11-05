@@ -59,13 +59,13 @@ public class ScriptURLProcessor extends Processor {
 			retVal = engine.eval(reader, jissModel.getScriptContext());
 		} catch (IOException | ScriptException e) {
 			error = new JissError(e);
+            fireProcessingEnded(jissModel, cmd, retVal, error);
 			err(jissModel, e);
 		} catch (JissError e) {
 			error = e;
             fireProcessingEnded(jissModel, cmd, retVal, error);
 			throw e;
 		} finally {
-            fireProcessingEnded(jissModel, cmd, retVal, error);
 			jissModel.setProcessor(new DefaultProcessor());
 		}
 
