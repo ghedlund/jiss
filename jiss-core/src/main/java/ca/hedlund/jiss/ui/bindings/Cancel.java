@@ -31,6 +31,7 @@ import ca.hedlund.dp.extensions.IExtendable;
 import ca.hedlund.jiss.DefaultProcessor;
 import ca.hedlund.jiss.JissModel;
 import ca.hedlund.jiss.JissThread;
+import ca.hedlund.jiss.ui.FutureExtension;
 import ca.hedlund.jiss.ui.JissConsole;
 import ca.hedlund.jiss.ui.JissDocument;
 
@@ -70,9 +71,9 @@ public class Cancel extends AbstractAction implements ExtensionProvider {
 		final JissConsole console = consoleRef.get();
         if(console == null) return;
 		final JissModel model = console.getModel();
-		final Future<Object> currentFuture = model.getExtension(Future.class);
-		if(currentFuture != null) {
-			currentFuture.cancel(true);
+		final FutureExtension currentFutureExt = model.getExtension(FutureExtension.class);
+		if(currentFutureExt != null) {
+			currentFutureExt.future().cancel(true);
 		} else {
 			// cancel current insertion
 			final JissDocument doc = JissDocument.class.cast(console.getDocument());

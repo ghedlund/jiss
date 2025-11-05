@@ -15,6 +15,8 @@
  */
 package ca.hedlund.jiss;
 
+import ca.hedlund.jiss.ui.FutureExtension;
+
 import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
@@ -45,7 +47,7 @@ public class DefaultProcessor extends Processor {
 			throw error;
 		} finally {
 			fireProcessingEnded(jissModel, cmd, retVal, error);
-            jissModel.putExtension(Future.class, null);
+            jissModel.putExtension(FutureExtension.class, null);
 		}
 		
 		return retVal;
@@ -54,7 +56,7 @@ public class DefaultProcessor extends Processor {
     private static Object execWithFuture(final ScriptEngine engine, final String script, final JissModel jissModel) throws ExecutionException, InterruptedException {
         final Callable<Object> val = () -> engine.eval(script, jissModel.getScriptContext());
         final Future<Object> f = Executors.newCachedThreadPool().submit(val);
-        jissModel.putExtension(Future.class, f);
+        jissModel.putExtension(FutureExtension.class, new FutureExtension(f));
         return f.get();
     }
 
