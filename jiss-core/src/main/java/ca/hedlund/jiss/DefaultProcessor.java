@@ -39,7 +39,10 @@ public class DefaultProcessor extends Processor {
 		final ScriptEngine engine = jissModel.getScriptEngine();
 		try {
 			retVal = execWithFuture(engine, cmd, jissModel);
-		} catch (ExecutionException | InterruptedException | CancellationException e) {
+		} catch (ExecutionException e) {
+            error = new JissError(e);
+            throw error;
+        } catch (InterruptedException | CancellationException e) {
             error = new JissError(e);
 		} finally {
 			fireProcessingEnded(jissModel, cmd, retVal, error);
