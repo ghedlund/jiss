@@ -20,10 +20,7 @@ import ca.hedlund.jiss.ui.FutureExtension;
 import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 /**
  * Default jiss processor.
@@ -42,9 +39,8 @@ public class DefaultProcessor extends Processor {
 		final ScriptEngine engine = jissModel.getScriptEngine();
 		try {
 			retVal = execWithFuture(engine, cmd, jissModel);
-		} catch (InterruptedException | ExecutionException e) {
-			error = new JissError(e);
-			throw error;
+		} catch (ExecutionException | InterruptedException | CancellationException e) {
+            error = new JissError(e);
 		} finally {
 			fireProcessingEnded(jissModel, cmd, retVal, error);
             jissModel.putExtension(FutureExtension.class, null);
