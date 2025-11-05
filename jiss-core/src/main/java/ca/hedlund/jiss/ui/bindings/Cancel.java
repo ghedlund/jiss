@@ -72,7 +72,7 @@ public class Cancel extends AbstractAction implements ExtensionProvider {
 		final JissThread currentThread = model.getExtension(JissThread.class);
 		if(currentThread != null) {
 			if(currentThread.isAlive()) {
-				currentThread.stop();
+				currentThread.interrupt();
 				model.setProcessor(new DefaultProcessor());
 				model.removeExtension(JissThread.class);
 				console.prompt();
