@@ -41,6 +41,7 @@ public class DefaultProcessor extends Processor {
 			retVal = execWithFuture(engine, cmd, jissModel);
 		} catch (ExecutionException e) {
             error = new JissError(e);
+            fireProcessingEnded(jissModel, cmd, retVal, error);
             throw error;
         } catch (InterruptedException | CancellationException e) {
             error = new JissError(e);
