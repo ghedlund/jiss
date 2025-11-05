@@ -57,17 +57,15 @@ public class ScriptURLProcessor extends Processor {
 			final InputStream is = url.openStream();
 			final InputStreamReader reader = new InputStreamReader(is, "UTF-8");
 			retVal = engine.eval(reader, jissModel.getScriptContext());
-		} catch (IOException e) {
-			error = new JissError(e);
-			err(jissModel, e);
-		} catch (ScriptException e) {
+		} catch (IOException | ScriptException e) {
 			error = new JissError(e);
 			err(jissModel, e);
 		} catch (JissError e) {
 			error = e;
+            fireProcessingEnded(jissModel, cmd, retVal, error);
 			throw e;
 		} finally {
-			fireProcessingEnded(jissModel, cmd, retVal, error);
+            fireProcessingEnded(jissModel, cmd, retVal, error);
 			jissModel.setProcessor(new DefaultProcessor());
 		}
 
