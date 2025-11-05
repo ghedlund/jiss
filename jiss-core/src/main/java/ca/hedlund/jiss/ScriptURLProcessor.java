@@ -15,10 +15,13 @@
  */
 package ca.hedlund.jiss;
 
+import ca.hedlund.jiss.ui.FutureExtension;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,20 +59,35 @@ public class ScriptURLProcessor extends Processor {
 
 			final InputStream is = url.openStream();
 			final InputStreamReader reader = new InputStreamReader(is, "UTF-8");
-			retVal = engine.eval(reader, jissModel.getScriptContext());
-		} catch (IOException | ScriptException e) {
+			retVal = execWithFuture(engine, reader, jissModel);
+		} catch (ExecutionException e) {
 			error = new JissError(e);
-            fireProcessingEnded(jissModel, cmd, retVal, error);
+			fireProcessingEnded(jissModel, cmd, retVal, error);
+			throw error;
+		} catch (InterruptedException | CancellationException e) {
+			error = new JissError(e);
+		} catch (IOException e) {
+			error = new JissError(e);
+			fireProcessingEnded(jissModel, cmd, retVal, error);
 			err(jissModel, e);
 		} catch (JissError e) {
 			error = e;
-            fireProcessingEnded(jissModel, cmd, retVal, error);
+			fireProcessingEnded(jissModel, cmd, retVal, error);
 			throw e;
 		} finally {
+			fireProcessingEnded(jissModel, cmd, retVal, error);
+			jissModel.putExtension(FutureExtension.class, null);
 			jissModel.setProcessor(new DefaultProcessor());
 		}
 
 		return retVal;
+	}
+
+	private static Object execWithFuture(final ScriptEngine engine, final InputStreamReader reader, final JissModel jissModel) throws ExecutionException, InterruptedException {
+		final Callable<Object> val = () -> engine.eval(reader, jissModel.getScriptContext());
+		final Future<Object> f = Executors.newCachedThreadPool().submit(val);
+		jissModel.putExtension(FutureExtension.class, new FutureExtension(f));
+		return f.get();
 	}
 
 	private void err(JissModel model, String msg) throws JissError {
