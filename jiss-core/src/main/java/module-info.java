@@ -13,4 +13,6 @@ module ca.hedlund.jiss.core {
 	exports ca.hedlund.jiss.ui;
 	exports ca.hedlund.jiss.ui.bindings;
 	exports ca.hedlund.jiss.ui.menu;
+
+    uses ca.hedlund.dp.extensions.ExtensionProvider;
 }
