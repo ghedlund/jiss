@@ -1,0 +1,10 @@
+[versions]
+jaxb = "4.0.0"
+commons-lang3 = "3.11"
+rsyntaxtextarea = "3.6.1"
+
+[libraries]
+commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }
+jakarta-xml-bind-api = { module = "jakarta.xml.bind:jakarta.xml.bind-api", version.ref = "jaxb" }
+jaxb-impl = { module = "com.sun.xml.bind:jaxb-impl", version.ref = "jaxb" }
+rsyntaxtextarea = { module = "com.fifesoft:rsyntaxtextarea", version.ref = "rsyntaxtextarea" }
