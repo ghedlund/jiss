@@ -285,11 +285,11 @@ provides ca.hedlund.dp.extensions.ExtensionProvider with
 
 **Goal:** Verify RSyntaxTextArea 3.6.1 compiles cleanly, fix deprecated API usage.
 
-- [ ] Verify `OpenTextAreaAction.java` compiles against RSyntaxTextArea 3.6.1 API
-- [ ] Replace `KeyEvent.CTRL_MASK` → `KeyEvent.CTRL_DOWN_MASK` in:
+- [x] Verify `OpenTextAreaAction.java` compiles against RSyntaxTextArea 3.6.1 API
+- [x] Replace `KeyEvent.CTRL_MASK` → `KeyEvent.CTRL_DOWN_MASK` in:
   - `jiss-rsyntaxarea-input/src/main/java/ca/hedlund/jiss/textarea/OpenTextAreaAction.java:162`
   - `jiss-core/src/main/java/ca/hedlund/jiss/ui/bindings/Cancel.java` (if present)
-- [ ] Fix any other compilation errors from the RSyntaxTextArea upgrade
+- [x] Fix any other compilation errors from the RSyntaxTextArea upgrade
 
 **Validation:** `./gradlew build` succeeds with zero warnings from deprecated API usage.
 
@@ -301,24 +301,24 @@ provides ca.hedlund.dp.extensions.ExtensionProvider with
 
 **Goal:** Remove Maven artifacts, update .gitignore, update CLAUDE.md.
 
-- [ ] Delete all `pom.xml` files (root + 5 modules)
-- [ ] Delete `pom.xml.versionsBackup`
-- [ ] Initialize Gradle wrapper: `gradle wrapper --gradle-version 9.3.1`
-- [ ] Update `.gitignore`:
+- [x] Delete all `pom.xml` files (root + 5 modules)
+- [x] Delete `pom.xml.versionsBackup`
+- [x] Initialize Gradle wrapper: `gradle wrapper --gradle-version 9.3.1`
+- [x] Update `.gitignore`:
   ```
   # Gradle
   .gradle/
   build/
   !gradle/wrapper/gradle-wrapper.jar
   ```
-- [ ] Update `CLAUDE.md` with new build commands:
+- [x] Update `CLAUDE.md` with new build commands:
   ```
   ./gradlew build          # Build all modules
   ./gradlew :jiss-core:build  # Build single module
   ./gradlew :jiss-app:run  # Run standalone app
   ./gradlew publish        # Publish to GitHub Packages
   ```
-- [ ] Verify publishing config: `./gradlew publishToMavenLocal` (dry run)
+- [x] Verify publishing config: `./gradlew publishToMavenLocal` (dry run)
 
 **Validation:** `./gradlew clean build` from clean state. `./gradlew :jiss-app:run` launches the app.
 
@@ -340,17 +340,17 @@ provides ca.hedlund.dp.extensions.ExtensionProvider with
 ## Acceptance Criteria
 
 ### Functional
-- [ ] `./gradlew build` compiles all 5 modules successfully
+- [x] `./gradlew build` compiles all 5 modules successfully
 - [ ] `./gradlew :jiss-app:run` launches the application with all plugins loaded (history, blocks, key bindings, syntax highlighting)
-- [ ] `./gradlew publishToMavenLocal` produces artifacts in `~/.m2/repository/ca/hedlund/`
-- [ ] All module-info.java files have correct `requires`, `exports`, `provides`, `uses`, and `opens` directives
-- [ ] No Maven files remain in the project
+- [x] `./gradlew publishToMavenLocal` produces artifacts in `~/.m2/repository/ca/hedlund/`
+- [x] All module-info.java files have correct `requires`, `exports`, `provides`, `uses`, and `opens` directives
+- [x] No Maven files remain in the project
 
 ### Non-Functional
-- [ ] Gradle wrapper committed (gradlew, gradlew.bat, gradle/wrapper/)
-- [ ] .gitignore updated for Gradle conventions
-- [ ] CLAUDE.md reflects new build commands
-- [ ] Version catalog (`gradle/libs.versions.toml`) manages all dependency versions
+- [x] Gradle wrapper committed (gradlew, gradlew.bat, gradle/wrapper/)
+- [x] .gitignore updated for Gradle conventions
+- [x] CLAUDE.md reflects new build commands
+- [x] Version catalog (`gradle/libs.versions.toml`) manages all dependency versions
 
 ## Unresolved Questions
 
