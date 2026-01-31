@@ -4,15 +4,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Java Interactive Scripting Shell (JISS) — a Swing component for embedding a JSR-223 scripting shell in Java applications. Multi-module Maven project, Java 17+, Apache 2.0 license.
+Java Interactive Scripting Shell (JISS) — a Swing component for embedding a JSR-223 scripting shell in Java applications. Multi-module Gradle project (Kotlin DSL), Java 23, Apache 2.0 license.
 
 ## Build Commands
 
 ```bash
-mvn clean install              # Build all modules
-mvn -pl jiss-core clean install  # Build single module
-mvn test                       # Run tests (jiss-history, jiss-blocks have tests)
-mvn -pl jiss-history test      # Test single module
+./gradlew build                    # Build all modules
+./gradlew :jiss-core:build         # Build single module
+./gradlew :jiss-app:run            # Run standalone app
+./gradlew publishToMavenLocal      # Publish to local Maven repo
+./gradlew publish                  # Publish to GitHub Packages
 ```
 
 ## Modules
@@ -32,18 +33,21 @@ Dependency flow: `jiss-app → jiss-core ← jiss-history ← jiss-blocks`, `jis
 - **JissModel** (`ca.hedlund.jiss`): Central model holding ScriptEngine, ScriptContext, Processor, and preprocessor list. Implements IExtendable for plugin support.
 - **JissConsole** (`ca.hedlund.jiss.ui`): JTextPane-based REPL with custom document, caret, and navigation filtering.
 - **Preprocessor chain** (`ca.hedlund.jiss.preprocessor`): Chain of responsibility — commands like `::exec`, `::info`, `::lang`, `::reset` are handled by JissPreprocessor implementations before reaching the script engine.
-- **Extension system** (`ca.hedlund.dp.extensions`): ServiceLoader-based plugin architecture. Extensions discovered via META-INF/services files.
-- **Java modules**: All subprojects declare `module-info.java` (JPMS).
+- **Extension system** (`ca.hedlund.dp.extensions`): ServiceLoader-based plugin architecture. Extensions discovered via both `provides` directives in `module-info.java` and `META-INF/services` files.
+- **Java modules**: All subprojects are fully JPMS-compliant with `module-info.java` declaring `requires`, `exports`, `provides`, `uses`, and `opens` directives.
 
 ## Key Dependencies
 
+Managed in `gradle/libs.versions.toml`:
 - Apache Commons Lang 3.11
 - Jakarta XML Bind API 4.0.0 + JAXB impl (history/blocks serialization)
-- RSyntaxTextArea 2.0.2 (syntax highlighting plugin)
+- RSyntaxTextArea 3.6.1 (syntax highlighting plugin)
 
 ## Conventions
 
-- Uses Java Platform Module System (JPMS) — every module has `module-info.java`
-- Plugin discovery via `META-INF/services/` (ServiceLoader pattern)
+- Uses Java Platform Module System (JPMS) — every module has `module-info.java` with full `provides`/`uses` declarations
+- Plugin discovery via ServiceLoader (`provides` in module-info.java + `META-INF/services/` for classpath compat)
+- JAXB packages opened via targeted `opens ... to com.sun.xml.bind` directives
 - Swing EDT conventions for UI code
 - Package root: `ca.hedlund.jiss` (core), `ca.hedlund.dp` (design pattern utilities)
+- Java 23 toolchain with foojay auto-provisioning
