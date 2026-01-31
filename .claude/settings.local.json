@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(mvn:*)",
+      "Bash(java -version:*)",
+      "Bash(xargs cat:*)",
+      "Bash(wc:*)",
+      "mcp__plugin_compound-engineering_context7__resolve-library-id",
+      "WebSearch",
+      "mcp__plugin_compound-engineering_context7__query-docs",
+      "Bash(unzip:*)",
+      "Bash(jar:*)",
+      "Bash(xargs:*)",
+      "Bash(find:*)",
+      "Bash(gradle:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ]
+  }
+}
