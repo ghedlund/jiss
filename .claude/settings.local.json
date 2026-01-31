@@ -15,7 +15,16 @@
       "Bash(find:*)",
       "Bash(gradle:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git checkout:*)",
+      "Bash(gh issue create:*)",
+      "Bash(./gradlew build:*)",
+      "Bash(./gradlew:*)",
+      "Bash(git rm:*)",
+      "Bash(gh issue comment:*)",
+      "Bash(git push:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh issue close:*)"
     ]
   }
 }
