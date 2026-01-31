@@ -51,7 +51,7 @@ public class SoftReturn extends AbstractAction implements ExtensionProvider {
 	private WeakReference<JissConsole> consoleRef;
 	
 	public KeyStroke getKeystroke() {
-		return KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, KeyEvent.SHIFT_MASK);
+		return KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK);
 	}
 
 	@Override

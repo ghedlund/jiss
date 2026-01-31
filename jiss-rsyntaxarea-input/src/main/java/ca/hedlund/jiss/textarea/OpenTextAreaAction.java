@@ -158,7 +158,7 @@ public class OpenTextAreaAction extends AbstractAction implements
 	}
 	
 	public KeyStroke getKeystroke() {
-		return KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_MASK);
+		return KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK);
 	}
 
 	@Override

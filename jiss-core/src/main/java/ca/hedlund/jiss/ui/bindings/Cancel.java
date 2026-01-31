@@ -53,7 +53,7 @@ public class Cancel extends AbstractAction implements ExtensionProvider {
 	private WeakReference<JissConsole> consoleRef;
 	
 	public KeyStroke getKeystroke() {
-		return KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_MASK);
+		return KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK);
 	}
 
     public Cancel() {
