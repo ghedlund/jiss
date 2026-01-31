@@ -17,6 +17,9 @@ subprojects {
         tasks.withType<JavaCompile>().configureEach {
             options.encoding = "UTF-8"
         }
+        tasks.withType<Javadoc>().configureEach {
+            (options as StandardJavadocDocletOptions).addBooleanOption("Xdoclint:none", true)
+        }
     }
 
     pluginManager.withPlugin("java") {

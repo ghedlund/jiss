@@ -15,4 +15,16 @@ module ca.hedlund.jiss.core {
 	exports ca.hedlund.jiss.ui.menu;
 
     uses ca.hedlund.dp.extensions.ExtensionProvider;
+    uses ca.hedlund.jiss.JissPreprocessor;
+
+    provides ca.hedlund.dp.extensions.ExtensionProvider with
+        ca.hedlund.jiss.ui.bindings.SoftReturn,
+        ca.hedlund.jiss.ui.bindings.RunCommand,
+        ca.hedlund.jiss.ui.bindings.Cancel;
+
+    provides ca.hedlund.jiss.JissPreprocessor with
+        ca.hedlund.jiss.preprocessor.InfoPreprocessor,
+        ca.hedlund.jiss.preprocessor.ExecPreprocessor,
+        ca.hedlund.jiss.preprocessor.LangPreprocessor,
+        ca.hedlund.jiss.preprocessor.ResetPreprocessor;
 }
